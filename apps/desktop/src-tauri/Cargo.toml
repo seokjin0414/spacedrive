@@ -9,10 +9,7 @@ repository = { workspace = true }
 edition = { workspace = true }
 
 [dependencies]
-sd-core = { path = "../../../core", features = [
-	"ffmpeg",
-	"heif",
-] }
+sd-core = { path = "../../../core", features = ["ffmpeg", "heif"] }
 sd-fda = { path = "../../../crates/fda" }
 sd-prisma = { path = "../../../crates/prisma" }
 
@@ -32,7 +29,7 @@ uuid = { workspace = true, features = ["serde"] }
 thiserror.workspace = true
 
 opener = { version = "0.6.1", features = ["reveal"] }
-tauri = { version = "=1.5.3", features = [
+tauri = { version = "1.6.1", features = [
 	"macos-private-api",
 	"path-all",
 	"protocol-all",
@@ -60,7 +57,7 @@ sd-desktop-windows = { path = "../crates/windows" }
 webview2-com = "0.19.1"
 
 [build-dependencies]
-tauri-build = "1.5.0"
+tauri-build = "1.5.1"
 
 [features]
 default = ["ai-models", "custom-protocol"]

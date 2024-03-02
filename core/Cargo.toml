@@ -100,30 +100,30 @@ webp = { workspace = true }
 async-recursion = "1.0.5"
 async-stream = "0.3.5"
 bytes = "1.5.0"
-ctor = "0.2.5"
+ctor = "0.2.7"
 directories = "5.0.1"
 flate2 = "1.0.28"
-globset = { version = "^0.4.13", features = ["serde1"] }
+globset = { version = "0.4.14", features = ["serde1"] }
 hostname = "0.3.1"
 http-body = "0.4.5"
 http-range = "0.1.5"
 int-enum = "0.5.0"
-itertools = "0.12.0"
-mini-moka = "0.10.2"
-notify = { git="https://github.com/notify-rs/notify.git", rev="c3929ed114fbb0bc7457a9a498260461596b00ca", default-features = false, features = [
-  "macos_fsevent",
+itertools = "0.12.1"
+mini-moka = "0.10.3"
+notify = { git = "https://github.com/notify-rs/notify.git", rev = "c3929ed114fbb0bc7457a9a498260461596b00ca", default-features = false, features = [
+	"macos_fsevent",
 ] }
 rmpv = "^1.0.1"
 serde-hashkey = "0.4.5"
 serde_repr = "0.1"
-serde_with = "3.4.0"
-slotmap = "1.0.6"
+serde_with = "3.6.1"
+slotmap = "1.0.7"
 static_assertions = "1.1.0"
-sysinfo = "0.29.10"
+sysinfo = "0.30.6"
 tar = "0.4.40"
-aws-sdk-s3 = { version = "1.5.0", features = ["behavior-version-latest"] }
-aws-config = "1.0.3"
-aws-credential-types = "1.0.3"
+aws-sdk-s3 = { version = "1.17.0", features = ["behavior-version-latest"] }
+aws-config = "1.1.7"
+aws-credential-types = "1.1.7"
 base91 = "0.1.0"
 sd-actors = { version = "0.1.0", path = "../crates/actors" }
 tower-service = "0.3.2"

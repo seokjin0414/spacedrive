@@ -93,7 +93,7 @@ rspc = { git = "https://github.com/spacedriveapp/rspc.git", rev = "f3347e2e8bfe3
 
 # `cursor_position` method
 tauri = { git = "https://github.com/spacedriveapp/tauri.git", rev = "8409af71a83d631ff9d1cd876c441a57511a1cbd" }
-tao = { git = "https://github.com/spacedriveapp/tao", rev = "7880adbc090402c44fbcf006669458fa82623403" }
+tao = { git = "https://github.com/spacedriveapp/tao", rev = "0ef0d4079afb80638e114ca1af2cce9a76ceff64" }
 
 # Add `Control::open_stream_with_addrs`
 libp2p = { git = "https://github.com/spacedriveapp/rust-libp2p.git", rev = "a005656df7e82059a0eb2e333ebada4731d23f8c" }

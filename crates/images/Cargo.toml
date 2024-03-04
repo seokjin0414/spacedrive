@@ -33,7 +33,7 @@ resvg = "0.36.0"
 # this broke builds as we build our own liibheif, so i disabled their default features
 libheif-rs = { version = "1.0.0", default-features = false, optional = true }
 libheif-sys = { version = "2.1.0", default-features = false, optional = true }
-pdfium-render = { version = "0.8.17", features = [
+pdfium-render = { version = "0.8.18", features = [
 	"sync",
 	"image",
 	"thread_safe",

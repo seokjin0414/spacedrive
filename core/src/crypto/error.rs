@@ -2,7 +2,7 @@ use std::num::TryFromIntError;
 
 use thiserror::Error;
 
-pub type Result<T> = std::result::Result<T, KeyManagerError>;
+// pub type Result<T> = std::result::Result<T, KeyManagerError>;
 
 impl From<KeyManagerError> for rspc::Error {
 	fn from(value: KeyManagerError) -> Self {

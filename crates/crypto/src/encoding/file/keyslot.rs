@@ -1,8 +1,7 @@
 use crate::{
 	crypto::{Decryptor, Encryptor},
-	hashing::Hasher,
 	rng::CryptoRng,
-	types::{Aad, Algorithm, DerivationContext, EncryptedKey, HashingAlgorithm, Key, Nonce, Salt},
+	types::{Aad, Algorithm, EncryptedKey, HashingAlgorithm, Key, Nonce, Salt},
 	Result,
 };
 
@@ -21,13 +20,12 @@ impl Keyslot {
 		hashed_password: &Key,
 		master_key: &Key,
 		aad: Aad,
-		context: DerivationContext,
 	) -> Result<Self> {
 		let nonce = Nonce::generate(algorithm);
 		let salt = Salt::generate();
 
 		let encrypted_key = Encryptor::encrypt_key(
-			&Hasher::derive_key(hashed_password, salt, context),
+			&hashed_password.derive(salt),
 			&nonce,
 			algorithm,
 			master_key,
@@ -42,15 +40,9 @@ impl Keyslot {
 		})
 	}
 
-	pub(super) fn decrypt(
-		&self,
-		algorithm: Algorithm,
-		key: &Key,
-		aad: Aad,
-		context: DerivationContext,
-	) -> Result<Key> {
+	pub(super) fn decrypt(&self, algorithm: Algorithm, key: &Key, aad: Aad) -> Result<Key> {
 		Decryptor::decrypt_key(
-			&Hasher::derive_key(key, self.salt, context),
+			&key.derive(self.salt),
 			algorithm,
 			&self.encrypted_key.clone(),
 			aad,

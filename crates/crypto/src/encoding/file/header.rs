@@ -4,10 +4,7 @@ use super::{keyslot::Keyslot, object::HeaderObject, HeaderEncode, KEYSLOT_LIMIT,
 use crate::{
 	hashing::Hasher,
 	primitives::AAD_HEADER_LEN,
-	types::{
-		Aad, Algorithm, DerivationContext, HashingAlgorithm, Key, MagicBytes, Nonce, Salt,
-		SecretKey,
-	},
+	types::{Aad, Algorithm, HashingAlgorithm, Key, MagicBytes, Nonce, Salt, SecretKey},
 	utils::ToArray,
 	Error, Protected, Result,
 };
@@ -163,7 +160,6 @@ impl Header {
 	pub fn decrypt_object(
 		&self,
 		name: &'static str,
-		context: DerivationContext,
 		master_key: &Key,
 	) -> Result<Protected<Vec<u8>>> {
 		let rhs = Hasher::blake3(name.as_bytes());
@@ -172,7 +168,7 @@ impl Header {
 			.iter()
 			.filter_map(|o| {
 				o.identifier
-					.decrypt_id(master_key, self.algorithm, context, self.generate_aad())
+					.decrypt_id(master_key, self.algorithm, self.generate_aad())
 					.ok()
 					.and_then(|i| (i == rhs).then_some(o))
 			})
@@ -189,7 +185,6 @@ impl Header {
 		hash_salt: Salt,
 		hashed_password: &Key,
 		master_key: &Key,
-		context: DerivationContext,
 	) -> Result<()> {
 		if self.keyslots.len() + 1 > KEYSLOT_LIMIT {
 			return Err(Error::TooManyKeyslots);
@@ -202,19 +197,12 @@ impl Header {
 			hashed_password,
 			master_key,
 			self.generate_aad(),
-			context,
 		)?);
 
 		Ok(())
 	}
 
-	pub fn add_object(
-		&mut self,
-		name: &'static str,
-		context: DerivationContext,
-		master_key: &Key,
-		data: &[u8],
-	) -> Result<()> {
+	pub fn add_object(&mut self, name: &'static str, master_key: &Key, data: &[u8]) -> Result<()> {
 		if self.objects.len() + 1 > OBJECT_LIMIT {
 			return Err(Error::TooManyObjects);
 		}
@@ -226,7 +214,7 @@ impl Header {
 			.iter()
 			.filter_map(|o| {
 				o.identifier
-					.decrypt_id(master_key, self.algorithm, context, self.generate_aad())
+					.decrypt_id(master_key, self.algorithm, self.generate_aad())
 					.ok()
 					.map(|i| i == rhs)
 			})
@@ -239,18 +227,13 @@ impl Header {
 			name,
 			self.algorithm,
 			master_key,
-			context,
 			self.generate_aad(),
 			data,
 		)?);
 		Ok(())
 	}
 
-	pub fn decrypt_master_key(
-		&self,
-		keys: &[Key],
-		context: DerivationContext,
-	) -> Result<(Key, usize)> {
+	pub fn decrypt_master_key(&self, keys: &[Key]) -> Result<(Key, usize)> {
 		if self.keyslots.is_empty() {
 			return Err(Error::NoKeyslots);
 		}
@@ -259,7 +242,7 @@ impl Header {
 			.enumerate()
 			.find_map(|(i, k)| {
 				self.keyslots.iter().find_map(|z| {
-					z.decrypt(self.algorithm, k, self.generate_aad(), context)
+					z.decrypt(self.algorithm, k, self.generate_aad())
 						.ok()
 						.map(|x| (x, i))
 				})
@@ -270,7 +253,6 @@ impl Header {
 	pub fn decrypt_master_key_with_password(
 		&self,
 		password: &Protected<Vec<u8>>,
-		context: DerivationContext,
 	) -> Result<(Key, usize)> {
 		if self.keyslots.is_empty() {
 			return Err(Error::NoKeyslots);
@@ -287,7 +269,7 @@ impl Header {
 					&SecretKey::Null,
 				)
 				.ok()?;
-				z.decrypt(self.algorithm, &k, self.generate_aad(), context)
+				z.decrypt(self.algorithm, &k, self.generate_aad())
 					.ok()
 					.map(|x| (x, i))
 			})

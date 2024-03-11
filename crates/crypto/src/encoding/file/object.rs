@@ -1,7 +1,7 @@
 use crate::{
 	crypto::{Decryptor, Encryptor},
 	hashing::Hasher,
-	types::{Aad, Algorithm, DerivationContext, EncryptedKey, Key, Nonce, Salt},
+	types::{Aad, Algorithm, EncryptedKey, Key, Nonce, Salt},
 	Protected, Result,
 };
 
@@ -22,11 +22,10 @@ impl HeaderObject {
 		name: &'static str,
 		algorithm: Algorithm,
 		master_key: &Key,
-		context: DerivationContext,
 		aad: Aad,
 		data: &[u8],
 	) -> Result<Self> {
-		let identifier = HeaderObjectIdentifier::new(name, master_key, algorithm, context, aad)?;
+		let identifier = HeaderObjectIdentifier::new(name, master_key, algorithm, aad)?;
 
 		let nonce = Nonce::generate(algorithm);
 		let encrypted_data = Encryptor::encrypt_bytes(master_key, &nonce, algorithm, data, aad)?;
@@ -55,14 +54,13 @@ impl HeaderObjectIdentifier {
 		name: &'static str,
 		master_key: &Key,
 		algorithm: Algorithm,
-		context: DerivationContext,
 		aad: Aad,
 	) -> Result<Self> {
 		let salt = Salt::generate();
 		let nonce = Nonce::generate(algorithm);
 
 		let encrypted_key = Encryptor::encrypt_key(
-			&Hasher::derive_key(master_key, salt, context),
+			&master_key.derive(salt),
 			&nonce,
 			algorithm,
 			&Hasher::blake3(name.as_bytes()),
@@ -79,14 +77,8 @@ impl HeaderObjectIdentifier {
 		&self,
 		master_key: &Key,
 		algorithm: Algorithm,
-		context: DerivationContext,
 		aad: Aad,
 	) -> Result<Key> {
-		Decryptor::decrypt_key(
-			&Hasher::derive_key(master_key, self.salt, context),
-			algorithm,
-			&self.key,
-			aad,
-		)
+		Decryptor::decrypt_key(&master_key.derive(self.salt), algorithm, &self.key, aad)
 	}
 }

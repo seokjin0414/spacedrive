@@ -51,10 +51,10 @@ impl MountedKey {
 
 		// TODO(brxken128): maybe give these separate contexts, or even remove the second derivation
 		let ek = Encryptor::encrypt_key(
-			&Hasher::derive_key(root_key, salt, KEY_MOUNTING_CONTEXT),
+			&root_key.derive(salt),
 			&nonce,
 			algorithm,
-			&Hasher::derive_key(key, word_to_salt(word)?, KEY_MOUNTING_CONTEXT),
+			&key.derive(word_to_salt(word)?),
 			Aad::Null,
 		)?;
 
@@ -69,7 +69,7 @@ impl MountedKey {
 
 	pub fn decrypt(&self, root_key: &Key) -> Result<Key> {
 		Ok(Decryptor::decrypt_key(
-			&Hasher::derive_key(root_key, self.salt, KEY_MOUNTING_CONTEXT),
+			&root_key.derive(self.salt),
 			self.algorithm,
 			&self.key,
 			Aad::Null,
@@ -170,7 +170,7 @@ pub struct EncryptedWord(Salt, Nonce, Vec<u8>);
 impl EncryptedWord {
 	pub fn decrypt(&self, root_key: &Key, algorithm: Algorithm) -> Result<Protected<Vec<u8>>> {
 		Decryptor::decrypt_tiny(
-			&Hasher::derive_key(root_key, self.0, ENCRYPTED_WORD_CONTEXT),
+			&root_key.derive(self.0),
 			&self.1,
 			algorithm,
 			&self.2,
@@ -187,7 +187,7 @@ impl EncryptedWord {
 		let salt = Salt::generate();
 		let nonce = Nonce::generate(algorithm);
 		let bytes = Encryptor::encrypt_tiny(
-			&Hasher::derive_key(root_key, salt, ENCRYPTED_WORD_CONTEXT),
+			&root_key.derive(salt),
 			&nonce,
 			algorithm,
 			word.expose(),
@@ -303,7 +303,7 @@ impl TryFrom<key::Data> for UserKey {
 impl TestVector {
 	pub fn validate(&self, algorithm: Algorithm, hashed_password: &Key) -> Result<()> {
 		Decryptor::decrypt_key(
-			&Hasher::derive_key(hashed_password, self.0, TEST_VECTOR_CONTEXT),
+			&hashed_password.derive(self.0),
 			algorithm,
 			&self.1,
 			Aad::Null,
@@ -589,7 +589,7 @@ impl KeyManager {
 		)?;
 
 		let tv_key = Encryptor::encrypt_key(
-			&Hasher::derive_key(&hashed_password, tv_salt, TEST_VECTOR_CONTEXT),
+			&hashed_password.derive(tv_salt),
 			&tv_nonce,
 			algorithm,
 			&tv_key,

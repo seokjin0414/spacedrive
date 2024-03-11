@@ -2,20 +2,12 @@ use sd_crypto::{
 	crypto::{Decryptor, Encryptor},
 	encoding::Header,
 	hashing::Hasher,
-	types::{
-		Algorithm, DerivationContext, HashingAlgorithm, Key, MagicBytes, Params, Salt, SecretKey,
-	},
+	types::{Algorithm, HashingAlgorithm, Key, MagicBytes, Params, Salt, SecretKey},
 	Protected,
 };
 use std::io::{Cursor, Read, Seek, Write};
 
 const MAGIC_BYTES: MagicBytes<6> = MagicBytes::new(*b"crypto");
-
-const HEADER_KEY_CONTEXT: DerivationContext =
-	DerivationContext::new("crypto 2023-03-21 11:24:53 example header key context");
-
-const HEADER_OBJECT_CONTEXT: DerivationContext =
-	DerivationContext::new("crypto 2023-03-21 11:25:08 example header object context");
 
 const ALGORITHM: Algorithm = Algorithm::XChaCha20Poly1305;
 const HASHING_ALGORITHM: HashingAlgorithm = HashingAlgorithm::Argon2id(Params::Standard);
@@ -48,17 +40,11 @@ where
 			content_salt,
 			&hashed_password,
 			&master_key,
-			HEADER_KEY_CONTEXT,
 		)
 		.unwrap();
 
 	header
-		.add_object(
-			"FileMetadata",
-			HEADER_OBJECT_CONTEXT,
-			&master_key,
-			&OBJECT_DATA,
-		)
+		.add_object("FileMetadata", &master_key, &OBJECT_DATA)
 		.unwrap();
 
 	// Write the header to the file
@@ -84,9 +70,7 @@ where
 	// Deserialize the header from the encrypted file
 	let (header, aad) = Header::from_reader(reader, MAGIC_BYTES).unwrap();
 
-	let (master_key, index) = header
-		.decrypt_master_key_with_password(&password, HEADER_KEY_CONTEXT)
-		.unwrap();
+	let (master_key, index) = header.decrypt_master_key_with_password(&password).unwrap();
 
 	println!("key is in slot: {index}");
 
@@ -96,9 +80,7 @@ where
 	decryptor.decrypt_streams(reader, writer, aad).unwrap();
 
 	// Decrypt the object
-	let object = header
-		.decrypt_object("FileMetadata", HEADER_OBJECT_CONTEXT, &master_key)
-		.unwrap();
+	let object = header.decrypt_object("FileMetadata", &master_key).unwrap();
 
 	object.into_inner()
 }

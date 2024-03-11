@@ -4,8 +4,6 @@ use std::marker::PhantomData;
 use crate::{
 	crypto::{Decryptor, Encryptor},
 	encoding::{decode, encode},
-	hashing::Hasher,
-	primitives::ENCRYPTED_TYPE_CONTEXT,
 	types::{Aad, Algorithm, Key, Nonce, Salt},
 	Protected, Result,
 };
@@ -31,7 +29,7 @@ impl<T> Encrypted<T> {
 		let nonce = Nonce::generate(algorithm);
 
 		let bytes = Encryptor::encrypt_tiny(
-			&Hasher::derive_key(key, salt, ENCRYPTED_TYPE_CONTEXT),
+			&key.derive(salt),
 			&nonce,
 			algorithm,
 			&encode(item)?,
@@ -56,7 +54,7 @@ impl<T> Encrypted<T> {
 		let nonce = Nonce::generate(algorithm);
 
 		let bytes = Encryptor::encrypt_tiny(
-			&Hasher::derive_key(key, salt, ENCRYPTED_TYPE_CONTEXT),
+			&key.derive(salt),
 			&nonce,
 			algorithm,
 			item.expose(),
@@ -77,7 +75,7 @@ impl<T> Encrypted<T> {
 		T: Encode + Decode,
 	{
 		let bytes = Decryptor::decrypt_bytes(
-			&Hasher::derive_key(key, self.salt, ENCRYPTED_TYPE_CONTEXT),
+			&key.derive(self.salt),
 			&self.nonce,
 			self.algorithm,
 			&self.data,
@@ -90,7 +88,7 @@ impl<T> Encrypted<T> {
 
 	pub fn decrypt_bytes(self, key: &Key) -> Result<Protected<Vec<u8>>> {
 		let bytes = Decryptor::decrypt_bytes(
-			&Hasher::derive_key(key, self.salt, ENCRYPTED_TYPE_CONTEXT),
+			&key.derive(self.salt),
 			&self.nonce,
 			self.algorithm,
 			&self.data,
@@ -108,11 +106,18 @@ impl<T> Encrypted<T> {
 		encode(&self)
 	}
 
+	pub fn from_bytes(value: &[u8]) -> Result<Self>
+	where
+		T: Encode + Decode,
+	{
+		decode(value)
+	}
+
 	// check if key is okay
 	#[must_use]
 	pub fn validate_key(&self, key: &Key) -> bool {
 		Decryptor::decrypt_bytes(
-			&Hasher::derive_key(key, self.salt, ENCRYPTED_TYPE_CONTEXT),
+			&key.derive(self.salt),
 			&self.nonce,
 			self.algorithm,
 			&self.data,

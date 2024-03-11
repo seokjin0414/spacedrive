@@ -2,6 +2,8 @@
 //! in an effort to add additional type safety.
 use crate::{
 	ct::{Choice, ConstantTimeEq, ConstantTimeEqNull},
+	hashing::Hasher,
+	primitives::KEY_DERIVATION_CONTEXT,
 	rng::CryptoRng,
 	utils::ToArray,
 	Error, Protected,
@@ -257,6 +259,12 @@ impl Key {
 		bool::from(self.expose().ct_ne_null())
 			.then_some(())
 			.ok_or(Error::Validity)
+	}
+
+	#[inline]
+	#[must_use]
+	pub fn derive(&self, salt: Salt) -> Self {
+		Hasher::derive_key(self, salt, KEY_DERIVATION_CONTEXT)
 	}
 }
 

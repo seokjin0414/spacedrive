@@ -109,12 +109,8 @@ mod tests {
 	use crate::{
 		hashing::Hasher,
 		primitives::{KEY_LEN, SALT_LEN, SECRET_KEY_LEN},
-		types::{DerivationContext, HashingAlgorithm, Key, Params, Salt, SecretKey},
+		types::{HashingAlgorithm, Key, Params, Salt, SecretKey},
 	};
-
-	// don't do this in production code - use separate contexts for keys and objects
-	const CONTEXT: DerivationContext =
-		DerivationContext::new("crypto 2023-03-20 20:12:42 global test context");
 
 	const ARGON2ID_STANDARD: HashingAlgorithm = HashingAlgorithm::Argon2id(Params::Standard);
 	const ARGON2ID_HARDENED: HashingAlgorithm = HashingAlgorithm::Argon2id(Params::Hardened);
@@ -373,13 +369,13 @@ mod tests {
 
 	#[test]
 	fn blake3_kdf() {
-		let output = Hasher::derive_key(&Key::new([0x23; KEY_LEN]), SALT, CONTEXT);
+		let output = Key::new([0x23; KEY_LEN]).derive(SALT);
 
 		assert_eq!(
 			output,
 			Key::new([
-				88, 23, 212, 172, 220, 212, 247, 196, 129, 100, 18, 49, 208, 134, 247, 53, 83, 242,
-				143, 131, 58, 249, 130, 168, 70, 245, 250, 128, 106, 170, 175, 255,
+				79, 249, 147, 71, 226, 246, 144, 151, 75, 224, 156, 143, 149, 136, 23, 61, 86, 26,
+				87, 77, 11, 227, 10, 205, 244, 115, 130, 79, 71, 68, 176, 17
 			])
 		);
 	}

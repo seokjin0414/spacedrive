@@ -61,6 +61,8 @@ pub enum Error {
 
 	#[error("vault root key already exists")]
 	RootKeyAlreadyExists,
+	#[error("vault root key doesn't exist")]
+	RootKeyDoesntExist,
 
 	// general errors
 	#[error("expected length differs from provided length")]

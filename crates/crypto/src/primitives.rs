@@ -39,8 +39,8 @@ pub const ENCRYPTED_KEY_LEN: usize = KEY_LEN + AEAD_TAG_LEN;
 /// The length of plain master/hashed keys
 pub const KEY_LEN: usize = 32;
 
-pub const ENCRYPTED_TYPE_CONTEXT: DerivationContext =
-	DerivationContext::new("2023-10-02 03:19:34 Encrypted type derivation context");
+pub const KEY_DERIVATION_CONTEXT: DerivationContext =
+	DerivationContext::new("2024-03-11 10:32:51 Key derivation context");
 
 pub(super) const ARGON2ID_STANDARD: (u32, u32, u32) = (131_072, 8, 4);
 pub(super) const ARGON2ID_HARDENED: (u32, u32, u32) = (262_144, 8, 4);

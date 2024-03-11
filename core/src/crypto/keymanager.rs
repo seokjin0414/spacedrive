@@ -49,7 +49,6 @@ impl MountedKey {
 		let salt = Salt::generate();
 		let nonce = Nonce::generate(algorithm);
 
-		// TODO(brxken128): maybe give these separate contexts, or even remove the second derivation
 		let ek = Encryptor::encrypt_key(
 			&root_key.derive(salt),
 			&nonce,

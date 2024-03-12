@@ -4216,13 +4216,7 @@ dependencies = [
  "bytemuck",
  "byteorder",
  "color_quant",
- "exr",
- "gif 0.13.1",
- "jpeg-decoder",
  "num-traits",
- "png",
- "qoi",
- "tiff",
 ]
 
 [[package]]
@@ -4557,9 +4551,6 @@ name = "jpeg-decoder"
 version = "0.3.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "f5d4a7da358eff58addd2877a45865158f0d78c911d43a5784ceb7bbf52833b0"
-dependencies = [
- "rayon",
-]
 
 [[package]]
 name = "js-sys"
@@ -6680,8 +6671,7 @@ checksum = "8835116a5c179084a830efb3adc117ab007512b535bc1a21c991d3b32a6b44dd"
 [[package]]
 name = "pdfium-render"
 version = "0.8.19"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "963e2d314ba8a83846103febb5f68da7dc4486b95a9a748acdf1d37efa0ab047"
+source = "git+https://github.com/spacedriveapp/pdfium-render?rev=71ad508beb5b2d78c433ed16934a2e8d44cab4ee#71ad508beb5b2d78c433ed16934a2e8d44cab4ee"
 dependencies = [
  "bindgen 0.69.4",
  "bitflags 2.4.2",
@@ -8616,7 +8606,7 @@ dependencies = [
  "futures",
  "futures-concurrency",
  "half",
- "image 0.24.9",
+ "image 0.25.0",
  "ndarray",
  "once_cell",
  "ort",
@@ -8705,7 +8695,7 @@ dependencies = [
  "http-range",
  "hyper",
  "icrate",
- "image 0.24.9",
+ "image 0.25.0",
  "int-enum",
  "itertools 0.12.1",
  "libc",
@@ -8944,7 +8934,7 @@ name = "sd-images"
 version = "0.0.0"
 dependencies = [
  "bincode 2.0.0-rc.3",
- "image 0.24.9",
+ "image 0.25.0",
  "libheif-rs",
  "libheif-sys",
  "once_cell",
@@ -8962,7 +8952,7 @@ name = "sd-media-metadata"
 version = "0.0.0"
 dependencies = [
  "chrono",
- "image 0.24.9",
+ "image 0.25.0",
  "kamadak-exif",
  "rand 0.9.0-alpha.0",
  "rand_chacha 0.9.0-alpha.0",
@@ -10229,7 +10219,7 @@ checksum = "e1fc403891a21bcfb7c37834ba66a547a8f402146eba7265b5a6d88059c9ff2f"
 [[package]]
 name = "tauri"
 version = "1.6.1"
-source = "git+https://github.com/spacedriveapp/tauri.git?rev=79697266a679d6c89986d4417f424d498716212f#79697266a679d6c89986d4417f424d498716212f"
+source = "git+https://github.com/spacedriveapp/tauri.git?rev=2d3edfda6849bdc4d2b2320f764c375dafd0a6d8#2d3edfda6849bdc4d2b2320f764c375dafd0a6d8"
 dependencies = [
  "anyhow",
  "base64 0.21.7",
@@ -10272,7 +10262,7 @@ dependencies = [
  "tauri-macros",
  "tauri-runtime",
  "tauri-runtime-wry",
- "tauri-utils 1.5.3 (git+https://github.com/spacedriveapp/tauri.git?rev=79697266a679d6c89986d4417f424d498716212f)",
+ "tauri-utils 1.5.3 (git+https://github.com/spacedriveapp/tauri.git?rev=2d3edfda6849bdc4d2b2320f764c375dafd0a6d8)",
  "tempfile",
  "thiserror",
  "time",
@@ -10308,7 +10298,7 @@ dependencies = [
 [[package]]
 name = "tauri-codegen"
 version = "1.4.2"
-source = "git+https://github.com/spacedriveapp/tauri.git?rev=79697266a679d6c89986d4417f424d498716212f#79697266a679d6c89986d4417f424d498716212f"
+source = "git+https://github.com/spacedriveapp/tauri.git?rev=2d3edfda6849bdc4d2b2320f764c375dafd0a6d8#2d3edfda6849bdc4d2b2320f764c375dafd0a6d8"
 dependencies = [
  "base64 0.21.7",
  "brotli",
@@ -10323,7 +10313,7 @@ dependencies = [
  "serde",
  "serde_json",
  "sha2 0.10.8",
- "tauri-utils 1.5.3 (git+https://github.com/spacedriveapp/tauri.git?rev=79697266a679d6c89986d4417f424d498716212f)",
+ "tauri-utils 1.5.3 (git+https://github.com/spacedriveapp/tauri.git?rev=2d3edfda6849bdc4d2b2320f764c375dafd0a6d8)",
  "thiserror",
  "time",
  "uuid",
@@ -10333,14 +10323,14 @@ dependencies = [
 [[package]]
 name = "tauri-macros"
 version = "1.4.3"
-source = "git+https://github.com/spacedriveapp/tauri.git?rev=79697266a679d6c89986d4417f424d498716212f#79697266a679d6c89986d4417f424d498716212f"
+source = "git+https://github.com/spacedriveapp/tauri.git?rev=2d3edfda6849bdc4d2b2320f764c375dafd0a6d8#2d3edfda6849bdc4d2b2320f764c375dafd0a6d8"
 dependencies = [
  "heck 0.4.1",
  "proc-macro2",
  "quote",
  "syn 1.0.109",
  "tauri-codegen",
- "tauri-utils 1.5.3 (git+https://github.com/spacedriveapp/tauri.git?rev=79697266a679d6c89986d4417f424d498716212f)",
+ "tauri-utils 1.5.3 (git+https://github.com/spacedriveapp/tauri.git?rev=2d3edfda6849bdc4d2b2320f764c375dafd0a6d8)",
 ]
 
 [[package]]
@@ -10359,7 +10349,7 @@ dependencies = [
 [[package]]
 name = "tauri-runtime"
 version = "0.14.2"
-source = "git+https://github.com/spacedriveapp/tauri.git?rev=79697266a679d6c89986d4417f424d498716212f#79697266a679d6c89986d4417f424d498716212f"
+source = "git+https://github.com/spacedriveapp/tauri.git?rev=2d3edfda6849bdc4d2b2320f764c375dafd0a6d8#2d3edfda6849bdc4d2b2320f764c375dafd0a6d8"
 dependencies = [
  "gtk",
  "http 0.2.12",
@@ -10368,7 +10358,7 @@ dependencies = [
  "raw-window-handle",
  "serde",
  "serde_json",
- "tauri-utils 1.5.3 (git+https://github.com/spacedriveapp/tauri.git?rev=79697266a679d6c89986d4417f424d498716212f)",
+ "tauri-utils 1.5.3 (git+https://github.com/spacedriveapp/tauri.git?rev=2d3edfda6849bdc4d2b2320f764c375dafd0a6d8)",
  "thiserror",
  "url",
  "uuid",
@@ -10379,7 +10369,7 @@ dependencies = [
 [[package]]
 name = "tauri-runtime-wry"
 version = "0.14.5"
-source = "git+https://github.com/spacedriveapp/tauri.git?rev=79697266a679d6c89986d4417f424d498716212f#79697266a679d6c89986d4417f424d498716212f"
+source = "git+https://github.com/spacedriveapp/tauri.git?rev=2d3edfda6849bdc4d2b2320f764c375dafd0a6d8#2d3edfda6849bdc4d2b2320f764c375dafd0a6d8"
 dependencies = [
  "cocoa",
  "gtk",
@@ -10387,7 +10377,7 @@ dependencies = [
  "rand 0.9.0-alpha.0",
  "raw-window-handle",
  "tauri-runtime",
- "tauri-utils 1.5.3 (git+https://github.com/spacedriveapp/tauri.git?rev=79697266a679d6c89986d4417f424d498716212f)",
+ "tauri-utils 1.5.3 (git+https://github.com/spacedriveapp/tauri.git?rev=2d3edfda6849bdc4d2b2320f764c375dafd0a6d8)",
  "tracing",
  "uuid",
  "webkit2gtk",
@@ -10456,7 +10446,7 @@ dependencies = [
 [[package]]
 name = "tauri-utils"
 version = "1.5.3"
-source = "git+https://github.com/spacedriveapp/tauri.git?rev=79697266a679d6c89986d4417f424d498716212f#79697266a679d6c89986d4417f424d498716212f"
+source = "git+https://github.com/spacedriveapp/tauri.git?rev=2d3edfda6849bdc4d2b2320f764c375dafd0a6d8#2d3edfda6849bdc4d2b2320f764c375dafd0a6d8"
 dependencies = [
  "brotli",
  "ctor",
@@ -11588,10 +11578,9 @@ dependencies = [
 [[package]]
 name = "webp"
 version = "0.2.6"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "4bb5d8e7814e92297b0e1c773ce43d290bef6c17452dafd9fc49e5edb5beba71"
+source = "git+https://github.com/spacedriveapp/webp?rev=38d5e382eb0408113dc490b73fd82c86be95f326#38d5e382eb0408113dc490b73fd82c86be95f326"
 dependencies = [
- "image 0.24.9",
+ "image 0.25.0",
  "libwebp-sys",
 ]
 
@@ -12546,4 +12535,4 @@ dependencies = [
 [[patch.unused]]
 name = "tao"
 version = "0.16.5"
-source = "git+https://github.com/spacedriveapp/tao?rev=7880adbc090402c44fbcf006669458fa82623403#7880adbc090402c44fbcf006669458fa82623403"
+source = "git+https://github.com/spacedriveapp/tao?rev=7eb6638d38d5dd5356a662e8250a7f48b76b206f#7eb6638d38d5dd5356a662e8250a7f48b76b206f"

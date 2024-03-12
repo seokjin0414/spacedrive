@@ -61,7 +61,7 @@ futures = "0.3.30"
 futures-concurrency = "7.4.3"
 hex = "0.4.3"
 http = "0.2.9"
-image = "0.24.9"
+image = "0.25.0"
 normpath = "1.1.1"
 once_cell = "1.18.0"
 pin-project-lite = "0.2.13"
@@ -92,8 +92,8 @@ if-watch = { git = "https://github.com/oscartbeaumont/if-watch.git", rev = "a92c
 rspc = { git = "https://github.com/spacedriveapp/rspc.git", rev = "f3347e2e8bfe3f37bfacc437ca329fe71cdcb048" }
 
 # `cursor_position` method
-tauri = { git = "https://github.com/spacedriveapp/tauri.git", rev = "79697266a679d6c89986d4417f424d498716212f" }
-tao = { git = "https://github.com/spacedriveapp/tao", rev = "7880adbc090402c44fbcf006669458fa82623403" }
+tauri = { git = "https://github.com/spacedriveapp/tauri.git", rev = "2d3edfda6849bdc4d2b2320f764c375dafd0a6d8" }
+tao = { git = "https://github.com/spacedriveapp/tao", rev = "7eb6638d38d5dd5356a662e8250a7f48b76b206f" }
 
 # Add `Control::open_stream_with_addrs`
 libp2p = { git = "https://github.com/spacedriveapp/rust-libp2p.git", rev = "a005656df7e82059a0eb2e333ebada4731d23f8c" }
@@ -104,6 +104,9 @@ libp2p-stream = { git = "https://github.com/spacedriveapp/rust-libp2p.git", rev 
 # aes = { git = "https://github.com/RustCrypto/block-ciphers", rev = "5837233f86419dbe75b8e3824349e30f6bc40b22" }
 
 blake3 = { git = "https://github.com/brxken128/blake3", rev = "d3aab416c12a75c2bfabce33bcd594e428a79069" }
+
+pdfium-render = { git = "https://github.com/spacedriveapp/pdfium-render", rev = "71ad508beb5b2d78c433ed16934a2e8d44cab4ee" }
+webp = { git = "https://github.com/spacedriveapp/webp", rev = "38d5e382eb0408113dc490b73fd82c86be95f326" }
 
 [profile.dev]
 # Make compilation faster on macOS

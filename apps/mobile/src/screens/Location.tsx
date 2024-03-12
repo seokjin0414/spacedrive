@@ -11,21 +11,22 @@ export default function LocationScreen({ navigation, route }: BrowseStackScreenP
 	useNodes(location.data?.nodes);
 	const locationData = useCache(location.data?.item);
 
+	// FIXME: This is the correct query, but it doesn't work and then provides a deserialization error.
 	const paths = useLibraryQuery([
 		'search.paths',
 		{
 			filters: [
 				{
 					filePath: {
-						locations: { in: [id] }
-						// path: {location_id: id, path: path ?? '', include_descendants: true} // FIXME: This is the correct query, but it doesn't work and then provides a deserialization error.
+						// locations: { in: [Number(id)] }, // temporarlily disabled to navigate into folders. Note: This makes the query return all locations in the library.
+						path: { location_id: id, path: path ?? '', include_descendants: true }
 					}
 				}
 			],
 			take: 100
 		}
 	]);
-  
+
 	const pathsItemsReferences = useMemo(() => paths.data?.items ?? [], [paths.data]);
 	useNodes(paths.data?.nodes);
 	const pathsItems = useCache(pathsItemsReferences);
@@ -52,5 +53,5 @@ export default function LocationScreen({ navigation, route }: BrowseStackScreenP
 		getExplorerStore().path = path ?? '';
 	}, [id, path]);
 
-	return <Explorer items={pathsItems} />
+	return <Explorer items={pathsItems} />;
 }

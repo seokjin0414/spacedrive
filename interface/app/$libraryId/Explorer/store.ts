@@ -27,9 +27,9 @@ export type OrderingKeys<T extends Ordering> = T extends Ordering
 			[K in T['field']]: OrderingValue<T, K> extends SortOrder
 				? K
 				: OrderingValue<T, K> extends Ordering
-				? `${K}.${OrderingKeys<OrderingValue<T, K>>}`
-				: never;
-	  }[T['field']]
+					? `${K}.${OrderingKeys<OrderingValue<T, K>>}`
+					: never;
+		}[T['field']]
 	: never;
 
 export function orderingKey(ordering: Ordering): OrderingKey {
@@ -145,7 +145,8 @@ const state = {
 	drag: null as null | DragState,
 	isDragSelecting: false,
 	isRenaming: false,
-	isContextMenuOpen: false
+	isContextMenuOpen: false,
+	quickRescanLastRun: Date.now() - 200
 };
 
 export function flattenThumbnailKey(thumbKey: string[]) {

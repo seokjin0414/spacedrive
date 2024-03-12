@@ -10,6 +10,8 @@ use tokio::time::sleep;
 
 use super::err_break;
 
+//// Responsible for sending its instance's sync operations to the cloud.
+
 pub async fn run_actor(
 	library_id: Uuid,
 	sync: Arc<sd_core_sync::Manager>,
@@ -68,13 +70,17 @@ pub async fn run_actor(
 
 				let ops_len = ops.len();
 
+				use base64::prelude::*;
+
 				instances.push(do_add::Input {
 					uuid: req_add.instance_uuid,
 					key: req_add.key,
 					start_time,
 					end_time,
-					contents: serde_json::to_value(CompressedCRDTOperations::new(ops))
-						.expect("CompressedCRDTOperation should serialize!"),
+					contents: BASE64_STANDARD.encode(
+						rmp_serde::to_vec_named(&CompressedCRDTOperations::new(ops))
+							.expect("CompressedCRDTOperation should serialize!"),
+					),
 					ops_count: ops_len,
 				})
 			}

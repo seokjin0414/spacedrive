@@ -17,9 +17,10 @@ import FileRow from './FileRow';
 
 type ExplorerProps = {
 	items?: ExplorerItem[];
+	tabHeight?: boolean;
 };
 
-const Explorer = ({ items }: ExplorerProps) => {
+const Explorer = ({ items, tabHeight }: ExplorerProps) => {
 	const navigation = useNavigation<BrowseStackScreenProps<'Location'>['navigation']>();
 	const explorerStore = useExplorerStore();
 	const [layoutMode, setLayoutMode] = useState<ExplorerLayoutMode>(getExplorerStore().layoutMode);
@@ -45,7 +46,7 @@ const Explorer = ({ items }: ExplorerProps) => {
 	}
 
 	return (
-		<ScreenContainer scrollview={false} style={'gap-0 py-0'}>
+		<ScreenContainer tabHeight={tabHeight} scrollview={false} style={'gap-0 py-0'}>
 			{/* Header */}
 			<View style={tw`flex flex-row items-center justify-between`}>
 				{/* Sort By */}
@@ -88,8 +89,8 @@ const Explorer = ({ items }: ExplorerProps) => {
 						item.type === 'NonIndexedPath'
 							? item.item.path
 							: item.type === 'SpacedropPeer'
-							? item.item.name
-							: item.item.id.toString()
+								? item.item.name
+								: item.item.id.toString()
 					}
 					renderItem={({ item }) => (
 						<Pressable onPress={() => handlePress(item)}>

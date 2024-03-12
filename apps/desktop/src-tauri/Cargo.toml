@@ -47,7 +47,7 @@ directories = "5.0.1"
 
 [target.'cfg(target_os = "linux")'.dependencies]
 sd-desktop-linux = { path = "../crates/linux" }
-webkit2gtk = { version = "0.18.2", features = ["v2_2"] }
+webkit2gtk = { version = "0.19.2", features = ["v2_2"] }
 
 [target.'cfg(target_os = "macos")'.dependencies]
 sd-desktop-macos = { path = "../crates/macos" }

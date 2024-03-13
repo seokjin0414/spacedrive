@@ -92,7 +92,7 @@ if-watch = { git = "https://github.com/oscartbeaumont/if-watch.git", rev = "a92c
 rspc = { git = "https://github.com/spacedriveapp/rspc.git", rev = "f3347e2e8bfe3f37bfacc437ca329fe71cdcb048" }
 
 # `cursor_position` method
-tauri = { git = "https://github.com/spacedriveapp/tauri.git", rev = "2d3edfda6849bdc4d2b2320f764c375dafd0a6d8" }
+tauri = { git = "https://github.com/spacedriveapp/tauri.git", rev = "0ac79e41222e829b103fd9ccb33939ed6ac56885" }
 tao = { git = "https://github.com/spacedriveapp/tao", rev = "7eb6638d38d5dd5356a662e8250a7f48b76b206f" }
 
 # Add `Control::open_stream_with_addrs`

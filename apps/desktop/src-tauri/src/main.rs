@@ -246,16 +246,12 @@ async fn main() -> tauri::Result<()> {
 		.setup(move |app| {
 			let app = app.handle();
 
-			app.windows().iter().first().map(|(_, window)| {
-				if should_clear_localstorage {
-					println!("Cleared localStorage");
-					window.eval("localStorage.clear();").ok();
-				}
-
-				window.show().expect("Main window should show");
-			});
-
 			app.windows().iter().for_each(|(_, window)| {
+				// if should_clear_localstorage {
+				// 	println!("Cleared localStorage");
+				// 	window.eval("localStorage.clear();").ok();
+				// }
+
 				tokio::spawn({
 					let window = window.clone();
 					async move {

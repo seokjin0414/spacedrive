@@ -246,18 +246,21 @@ async fn main() -> tauri::Result<()> {
 		.setup(move |app| {
 			let app = app.handle();
 
-			println!("setup");
-
-			app.windows().iter().for_each(|(_, window)| {
+			app.windows().iter().first().map(|(_, window)| {
 				if should_clear_localstorage {
-					println!("bruh?");
+					println!("Cleared localStorage");
 					window.eval("localStorage.clear();").ok();
 				}
 
+				window.show().expect("Main window should show");
+			});
+
+			app.windows().iter().for_each(|(_, window)| {
 				tokio::spawn({
 					let window = window.clone();
 					async move {
 						sleep(Duration::from_secs(3)).await;
+						dbg!(window.is_visible());
 						if !window.is_visible().unwrap_or(true) {
 							// This happens if the JS bundle crashes and hence doesn't send ready event.
 							println!(

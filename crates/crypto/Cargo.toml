@@ -143,3 +143,8 @@ harness = false
 [[example]]
 path = "examples/file_encryption.rs"
 name = "file_encryption"
+
+[[example]]
+path = "examples/secure_erase.rs"
+name = "secure_erase"
+required-features = ["sys"]

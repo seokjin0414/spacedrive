@@ -18,19 +18,14 @@ fn bench(c: &mut Criterion) {
 		group.throughput(Throughput::Bytes(KEY_LEN as u64));
 
 		let test_key = Key::generate();
-		let test_key_encrypted =
-			Encryptor::encrypt_key(&key, &nonce, ALGORITHM, &test_key, Aad::Null).unwrap();
+		let test_key_encrypted = test_key.clone().encrypt(&key, ALGORITHM).unwrap();
 
 		group.bench_function(BenchmarkId::new("encrypt", "key"), |b| {
-			b.iter(|| {
-				Encryptor::encrypt_key(&key, &nonce, ALGORITHM, &test_key, Aad::Null).unwrap()
-			});
+			b.iter(|| test_key.clone().encrypt(&key, ALGORITHM).unwrap());
 		});
 
 		group.bench_function(BenchmarkId::new("decrypt", "key"), |b| {
-			b.iter(|| {
-				Decryptor::decrypt_key(&key, ALGORITHM, &test_key_encrypted, Aad::Null).unwrap()
-			});
+			b.iter(|| test_key_encrypted.clone().decrypt(&key));
 		});
 	}
 

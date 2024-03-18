@@ -1,16 +1,17 @@
+use bincode::{Decode, Encode};
+
 use crate::{
 	crypto::{Decryptor, Encryptor},
+	encrypted::Encrypted,
 	hashing::Hasher,
-	types::{Aad, Algorithm, EncryptedKey, Key, Nonce, Salt},
+	types::{Aad, Algorithm, Key, Nonce},
 	Protected, Result,
 };
 
-#[derive(Clone)]
-pub struct HeaderObjectIdentifier {
-	pub(super) key: EncryptedKey, // technically a key, although used as an identifier here
-	pub(super) salt: Salt,
-}
+#[derive(Clone, Encode, Decode)]
+pub struct HeaderObjectIdentifier(pub(super) Encrypted<Key>);
 
+#[derive(Encode, Decode)]
 pub struct HeaderObject {
 	pub identifier: HeaderObjectIdentifier,
 	pub nonce: Nonce,
@@ -22,13 +23,13 @@ impl HeaderObject {
 		name: &'static str,
 		algorithm: Algorithm,
 		master_key: &Key,
-		aad: Aad,
 		data: &[u8],
 	) -> Result<Self> {
-		let identifier = HeaderObjectIdentifier::new(name, master_key, algorithm, aad)?;
+		let identifier = HeaderObjectIdentifier::new(name, master_key, algorithm)?;
 
 		let nonce = Nonce::generate(algorithm);
-		let encrypted_data = Encryptor::encrypt_bytes(master_key, &nonce, algorithm, data, aad)?;
+		let encrypted_data =
+			Encryptor::encrypt_bytes(master_key, &nonce, algorithm, data, Aad::Null)?;
 
 		let object = Self {
 			identifier,
@@ -50,35 +51,13 @@ impl HeaderObject {
 }
 
 impl HeaderObjectIdentifier {
-	pub fn new(
-		name: &'static str,
-		master_key: &Key,
-		algorithm: Algorithm,
-		aad: Aad,
-	) -> Result<Self> {
-		let salt = Salt::generate();
-		let nonce = Nonce::generate(algorithm);
-
-		let encrypted_key = Encryptor::encrypt_key(
-			&master_key.derive(salt),
-			&nonce,
-			algorithm,
-			&Hasher::blake3(name.as_bytes()),
-			aad,
-		)?;
-
-		Ok(Self {
-			key: encrypted_key,
-			salt,
-		})
+	pub fn new(name: &'static str, master_key: &Key, algorithm: Algorithm) -> Result<Self> {
+		Ok(Self(
+			Hasher::blake3(name.as_bytes()).encrypt(master_key, algorithm)?,
+		))
 	}
 
-	pub(super) fn decrypt_id(
-		&self,
-		master_key: &Key,
-		algorithm: Algorithm,
-		aad: Aad,
-	) -> Result<Key> {
-		Decryptor::decrypt_key(&master_key.derive(self.salt), algorithm, &self.key, aad)
+	pub(super) fn decrypt_id(&self, master_key: &Key) -> Result<Key> {
+		self.0.clone().decrypt(master_key)
 	}
 }

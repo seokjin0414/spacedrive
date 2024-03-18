@@ -240,7 +240,7 @@ impl Key {
 	#[inline]
 	#[must_use]
 	pub fn new(v: [u8; KEY_LEN]) -> Self {
-		Self(Box::new(v))
+		Self(Box::default())
 	}
 
 	#[inline]

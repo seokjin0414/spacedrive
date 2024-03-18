@@ -2,6 +2,7 @@
 //! in an effort to add additional type safety.
 use crate::{
 	ct::{Choice, ConstantTimeEq, ConstantTimeEqNull},
+	encrypted::Encrypted,
 	hashing::Hasher,
 	primitives::KEY_DERIVATION_CONTEXT,
 	rng::CryptoRng,
@@ -18,10 +19,10 @@ use zeroize::{DefaultIsZeroes, Zeroize, ZeroizeOnDrop};
 use crate::primitives::{
 	AAD_HEADER_LEN, AAD_LEN, AES_256_GCM_SIV_NONCE_LEN, ARGON2ID_HARDENED, ARGON2ID_PARANOID,
 	ARGON2ID_STANDARD, BLAKE3_BALLOON_HARDENED, BLAKE3_BALLOON_PARANOID, BLAKE3_BALLOON_STANDARD,
-	ENCRYPTED_KEY_LEN, KEY_LEN, SALT_LEN, SECRET_KEY_LEN, XCHACHA20_POLY1305_NONCE_LEN,
+	KEY_LEN, SALT_LEN, SECRET_KEY_LEN, XCHACHA20_POLY1305_NONCE_LEN,
 };
 
-#[derive(Clone, Copy)]
+#[derive(Clone, Copy, PartialEq, Eq)]
 pub struct MagicBytes<const I: usize>([u8; I]);
 
 impl<const I: usize> MagicBytes<I> {
@@ -232,6 +233,8 @@ impl Algorithm {
 /// It can either be a random key, or a hashed key.
 ///
 /// You may also generate a secure random key with `Key::generate()`
+///
+/// This is `Box`ed internally in order to ensure it is heap-allocated.
 #[derive(Clone, Zeroize, ZeroizeOnDrop)]
 #[repr(transparent)]
 pub struct Key(Box<[u8; KEY_LEN]>);
@@ -240,7 +243,7 @@ impl Key {
 	#[inline]
 	#[must_use]
 	pub fn new(v: [u8; KEY_LEN]) -> Self {
-		Self(Box::default())
+		Self(Box::new(v))
 	}
 
 	#[inline]
@@ -265,6 +268,12 @@ impl Key {
 	#[must_use]
 	pub fn derive(&self, salt: Salt) -> Self {
 		Hasher::derive_key(self, salt, KEY_DERIVATION_CONTEXT)
+	}
+
+	#[inline]
+	#[cfg(feature = "serde")]
+	pub fn encrypt(self, key: &Self, algorithm: Algorithm) -> crate::Result<Encrypted<Self>> {
+		Encrypted::new(key, &self, algorithm)
 	}
 }
 
@@ -450,60 +459,6 @@ impl Display for SecretKey {
 	}
 }
 
-/// This should be used for passing an encrypted key around.
-///
-/// The length of the encrypted key is `ENCRYPTED_KEY_LEN` (which is `KEY_LEM` + `AEAD_TAG_LEN`).
-///
-/// This also stores the associated `Nonce`, in order to make the API a lot cleaner.
-#[derive(Clone, Encode, Decode)]
-#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
-#[cfg_attr(feature = "specta", derive(specta::Type))]
-pub struct EncryptedKey(
-	#[cfg_attr(feature = "serde", serde(with = "serde_big_array::BigArray"))]
-	[u8; ENCRYPTED_KEY_LEN],
-	Nonce,
-);
-
-impl EncryptedKey {
-	#[inline]
-	#[must_use]
-	pub const fn new(v: [u8; ENCRYPTED_KEY_LEN], nonce: Nonce) -> Self {
-		Self(v, nonce)
-	}
-
-	#[inline]
-	#[must_use]
-	pub const fn inner(&self) -> &[u8] {
-		&self.0
-	}
-
-	#[inline]
-	#[must_use]
-	pub const fn nonce(&self) -> &Nonce {
-		&self.1
-	}
-}
-
-impl ConstantTimeEq for EncryptedKey {
-	fn ct_eq(&self, rhs: &Self) -> Choice {
-		// short circuit if algorithm (and therefore nonce lengths) don't match
-		if !bool::from(self.nonce().algorithm().ct_eq(&rhs.nonce().algorithm())) {
-			return Choice::from(0);
-		}
-
-		let mut x = 1u8;
-		x.cmovz(&0u8, self.nonce().ct_eq(rhs.nonce()).unwrap_u8());
-		x.cmovz(&0u8, self.inner().ct_eq(rhs.inner()).unwrap_u8());
-		Choice::from(x)
-	}
-}
-
-impl PartialEq for EncryptedKey {
-	fn eq(&self, other: &Self) -> bool {
-		self.ct_eq(other).into()
-	}
-}
-
 #[derive(Clone, Copy, Default, Encode, Decode)]
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 #[cfg_attr(feature = "specta", derive(specta::Type))]
@@ -631,68 +586,13 @@ impl Debug for Key {
 	}
 }
 
-impl Debug for EncryptedKey {
-	fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-		f.write_str("[REDACTED]")
-	}
-}
-
 #[cfg(test)]
 mod tests {
 	use super::Algorithm;
 	use crate::{
-		primitives::{
-			AES_256_GCM_SIV_NONCE_LEN, ENCRYPTED_KEY_LEN, KEY_LEN, XCHACHA20_POLY1305_NONCE_LEN,
-		},
-		types::{EncryptedKey, Key, Nonce},
+		primitives::{KEY_LEN, XCHACHA20_POLY1305_NONCE_LEN},
+		types::{Key, Nonce},
 	};
-
-	const EK: [[u8; ENCRYPTED_KEY_LEN]; 2] = [[0x20; ENCRYPTED_KEY_LEN], [0x21; ENCRYPTED_KEY_LEN]];
-	const NONCES: [Nonce; 2] = [
-		Nonce::XChaCha20Poly1305([5u8; XCHACHA20_POLY1305_NONCE_LEN]),
-		Nonce::Aes256GcmSiv([8u8; AES_256_GCM_SIV_NONCE_LEN]),
-	];
-
-	#[test]
-	fn encrypted_key_eq() {
-		// same key and nonce
-		assert_eq!(
-			EncryptedKey::new(EK[0], NONCES[0]),
-			EncryptedKey::new(EK[0], NONCES[0])
-		);
-
-		// same key, different nonce
-		assert_ne!(
-			EncryptedKey::new(EK[0], NONCES[0]),
-			EncryptedKey::new(EK[0], NONCES[1])
-		);
-
-		// different key, same nonce
-		assert_ne!(
-			EncryptedKey::new(EK[0], NONCES[0]),
-			EncryptedKey::new(EK[1], NONCES[0])
-		);
-	}
-
-	#[test]
-	#[should_panic(expected = "assertion")]
-	fn encrypted_key_eq_different_key() {
-		// different key, same nonce
-		assert_eq!(
-			EncryptedKey::new(EK[0], NONCES[0]),
-			EncryptedKey::new(EK[1], NONCES[0])
-		);
-	}
-
-	#[test]
-	#[should_panic(expected = "assertion")]
-	fn encrypted_key_eq_different_nonce() {
-		// same key, different nonce
-		assert_eq!(
-			EncryptedKey::new(EK[0], NONCES[0]),
-			EncryptedKey::new(EK[0], NONCES[1])
-		);
-	}
 
 	#[test]
 	fn key_eq() {

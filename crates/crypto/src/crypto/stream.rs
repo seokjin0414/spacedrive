@@ -2,8 +2,7 @@ use std::io::{Cursor, Read, Write};
 
 use crate::{
 	primitives::{AEAD_TAG_LEN, BLOCK_LEN},
-	types::{Aad, Algorithm, EncryptedKey, Key, Nonce},
-	utils::ToArray,
+	types::{Aad, Algorithm, Key, Nonce},
 	Error, Protected, Result,
 };
 use aead::{
@@ -196,18 +195,6 @@ macro_rules! impl_stream {
 }
 
 impl Encryptor {
-	pub fn encrypt_key(
-		key: &Key,
-		nonce: &Nonce,
-		algorithm: Algorithm,
-		key_to_encrypt: &Key,
-		aad: Aad,
-	) -> Result<EncryptedKey> {
-		Self::encrypt_tiny(key, nonce, algorithm, key_to_encrypt.expose(), aad)
-			.map(|b| Ok(EncryptedKey::new(b.to_array()?, *nonce)))
-			.map_err(|_| Error::Encrypt)?
-	}
-
 	/// This is only for encrypting inputs < `BLOCK_LEN`. For anything larger,
 	/// see [`Encryptor::encrypt_bytes`] or [`Encryptor::encrypt_streams`].
 	///
@@ -236,23 +223,6 @@ impl Encryptor {
 }
 
 impl Decryptor {
-	pub fn decrypt_key(
-		key: &Key,
-		algorithm: Algorithm,
-		encrypted_key: &EncryptedKey,
-		aad: Aad,
-	) -> Result<Key> {
-		Self::decrypt_tiny(
-			key,
-			encrypted_key.nonce(),
-			algorithm,
-			encrypted_key.inner(),
-			aad,
-		)
-		.map(Key::try_from)
-		.map_err(|_| Error::Decrypt)?
-	}
-
 	/// This is only for decrypting inputs < `BLOCK_LEN + AEAD_TAG_LEN`. For anything larger,
 	/// see [`Decryptor::decrypt_bytes`] or [`Decryptor::decrypt_streams`].
 	///

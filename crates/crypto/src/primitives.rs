@@ -33,9 +33,6 @@ pub const AAD_LEN: usize = 32;
 /// Length of the AAD (for headers)
 pub const AAD_HEADER_LEN: usize = 38;
 
-/// The length of encrypted master keys
-pub const ENCRYPTED_KEY_LEN: usize = KEY_LEN + AEAD_TAG_LEN;
-
 /// The length of plain master/hashed keys
 pub const KEY_LEN: usize = 32;
 
@@ -54,8 +51,7 @@ mod tests {
 	use crate::primitives::{
 		AAD_LEN, AEAD_TAG_LEN, AES_256_GCM_SIV_NONCE_LEN, ARGON2ID_HARDENED, ARGON2ID_PARANOID,
 		ARGON2ID_STANDARD, BLAKE3_BALLOON_HARDENED, BLAKE3_BALLOON_PARANOID,
-		BLAKE3_BALLOON_STANDARD, BLOCK_LEN, ENCRYPTED_KEY_LEN, KEY_LEN, SECRET_KEY_LEN,
-		XCHACHA20_POLY1305_NONCE_LEN,
+		BLAKE3_BALLOON_STANDARD, BLOCK_LEN, KEY_LEN, SECRET_KEY_LEN, XCHACHA20_POLY1305_NONCE_LEN,
 	};
 
 	#[test]
@@ -106,11 +102,6 @@ mod tests {
 	#[test]
 	fn aead_tag_len() {
 		assert_eq!(AEAD_TAG_LEN, 16);
-	}
-
-	#[test]
-	fn encrypted_key_len() {
-		assert_eq!(ENCRYPTED_KEY_LEN, 48);
 	}
 
 	#[test]

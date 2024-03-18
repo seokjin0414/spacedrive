@@ -15,7 +15,7 @@ mod tests {
 			XCHACHA20_POLY1305_NONCE_LEN,
 		},
 		rng::CryptoRng,
-		types::{Aad, Algorithm, EncryptedKey, Key, Nonce},
+		types::{Aad, Algorithm, Key, Nonce},
 	};
 
 	// const KEY: Key = Key::new([0x23; KEY_LEN]);
@@ -58,23 +58,23 @@ mod tests {
 		],
 	];
 
-	const XCHACHA20_POLY1305_ENCRYPTED_KEY: EncryptedKey = EncryptedKey::new(
-		[
-			120, 245, 167, 96, 140, 26, 94, 182, 157, 89, 104, 19, 180, 3, 127, 234, 211, 167, 27,
-			198, 214, 110, 209, 57, 226, 89, 16, 246, 166, 56, 222, 148, 40, 198, 237, 205, 45, 49,
-			205, 18, 69, 102, 16, 78, 199, 141, 246, 165,
-		],
-		XCHACHA20_POLY1305_NONCE,
-	);
+	// const XCHACHA20_POLY1305_ENCRYPTED_KEY: EncryptedKey = EncryptedKey::new(
+	// 	[
+	// 		120, 245, 167, 96, 140, 26, 94, 182, 157, 89, 104, 19, 180, 3, 127, 234, 211, 167, 27,
+	// 		198, 214, 110, 209, 57, 226, 89, 16, 246, 166, 56, 222, 148, 40, 198, 237, 205, 45, 49,
+	// 		205, 18, 69, 102, 16, 78, 199, 141, 246, 165,
+	// 	],
+	// 	XCHACHA20_POLY1305_NONCE,
+	// );
 
-	const AES_256_GCM_ENCRYPTED_KEY: EncryptedKey = EncryptedKey::new(
-		[
-			227, 231, 27, 182, 122, 118, 64, 35, 125, 176, 152, 244, 156, 26, 234, 96, 178, 121,
-			73, 213, 228, 189, 45, 152, 189, 68, 214, 187, 123, 182, 91, 83, 216, 50, 174, 13, 157,
-			121, 165, 129, 227, 220, 139, 166, 9, 71, 215, 145,
-		],
-		AES_256_GCM_SIV_NONCE,
-	);
+	// const AES_256_GCM_ENCRYPTED_KEY: EncryptedKey = EncryptedKey::new(
+	// 	[
+	// 		227, 231, 27, 182, 122, 118, 64, 35, 125, 176, 152, 244, 156, 26, 234, 96, 178, 121,
+	// 		73, 213, 228, 189, 45, 152, 189, 68, 214, 187, 123, 182, 91, 83, 216, 50, 174, 13, 157,
+	// 		121, 165, 129, 227, 220, 139, 166, 9, 71, 215, 145,
+	// 	],
+	// 	AES_256_GCM_SIV_NONCE,
+	// );
 
 	#[test]
 	fn aes_256_gcm_siv_encrypt_bytes() {
@@ -132,32 +132,32 @@ mod tests {
 		assert_eq!(output.expose(), &PLAINTEXT);
 	}
 
-	#[test]
-	fn aes_256_gcm_siv_encrypt_key() {
-		let output = Encryptor::encrypt_key(
-			&Key::new([0x23; KEY_LEN]),
-			&AES_256_GCM_SIV_NONCE,
-			Algorithm::Aes256GcmSiv,
-			&Key::new([1u8; KEY_LEN]),
-			Aad::Null,
-		)
-		.unwrap();
+	// #[test]
+	// fn aes_256_gcm_siv_encrypt_key() {
+	// 	let output = Encryptor::encrypt_key(
+	// 		&Key::new([0x23; KEY_LEN]),
+	// 		&AES_256_GCM_SIV_NONCE,
+	// 		Algorithm::Aes256GcmSiv,
+	// 		&Key::new([1u8; KEY_LEN]),
+	// 		Aad::Null,
+	// 	)
+	// 	.unwrap();
 
-		assert_eq!(output, AES_256_GCM_ENCRYPTED_KEY);
-	}
+	// 	assert_eq!(output, AES_256_GCM_ENCRYPTED_KEY);
+	// }
 
-	#[test]
-	fn aes_256_gcm_siv_decrypt_key() {
-		let output = Decryptor::decrypt_key(
-			&Key::new([0x23; KEY_LEN]),
-			Algorithm::Aes256GcmSiv,
-			&AES_256_GCM_ENCRYPTED_KEY,
-			Aad::Null,
-		)
-		.unwrap();
+	// #[test]
+	// fn aes_256_gcm_siv_decrypt_key() {
+	// 	let output = Decryptor::decrypt_key(
+	// 		&Key::new([0x23; KEY_LEN]),
+	// 		Algorithm::Aes256GcmSiv,
+	// 		&AES_256_GCM_ENCRYPTED_KEY,
+	// 		Aad::Null,
+	// 	)
+	// 	.unwrap();
 
-		assert_eq!(output, Key::new([1u8; KEY_LEN]));
-	}
+	// 	assert_eq!(output, Key::new([1u8; KEY_LEN]));
+	// }
 
 	#[test]
 	fn aes_256_gcm_siv_encrypt_tiny() {
@@ -436,32 +436,32 @@ mod tests {
 		assert_eq!(output, XCHACHA20_POLY1305_BYTES_EXPECTED[0]);
 	}
 
-	#[test]
-	fn xchacha20_poly1305_encrypt_key() {
-		let output = Encryptor::encrypt_key(
-			&Key::new([0x23; KEY_LEN]),
-			&XCHACHA20_POLY1305_NONCE,
-			Algorithm::XChaCha20Poly1305,
-			&Key::new([1u8; KEY_LEN]),
-			Aad::Null,
-		)
-		.unwrap();
+	// #[test]
+	// fn xchacha20_poly1305_encrypt_key() {
+	// 	let output = Encryptor::encrypt_key(
+	// 		&Key::new([0x23; KEY_LEN]),
+	// 		&XCHACHA20_POLY1305_NONCE,
+	// 		Algorithm::XChaCha20Poly1305,
+	// 		&Key::new([1u8; KEY_LEN]),
+	// 		Aad::Null,
+	// 	)
+	// 	.unwrap();
 
-		assert_eq!(output, XCHACHA20_POLY1305_ENCRYPTED_KEY);
-	}
+	// 	assert_eq!(output, XCHACHA20_POLY1305_ENCRYPTED_KEY);
+	// }
 
-	#[test]
-	fn xchacha20_poly1305_decrypt_key() {
-		let output = Decryptor::decrypt_key(
-			&Key::new([0x23; KEY_LEN]),
-			Algorithm::XChaCha20Poly1305,
-			&XCHACHA20_POLY1305_ENCRYPTED_KEY,
-			Aad::Null,
-		)
-		.unwrap();
+	// #[test]
+	// fn xchacha20_poly1305_decrypt_key() {
+	// 	let output = Decryptor::decrypt_key(
+	// 		&Key::new([0x23; KEY_LEN]),
+	// 		Algorithm::XChaCha20Poly1305,
+	// 		&XCHACHA20_POLY1305_ENCRYPTED_KEY,
+	// 		Aad::Null,
+	// 	)
+	// 	.unwrap();
 
-		assert_eq!(output, Key::new([1u8; KEY_LEN]));
-	}
+	// 	assert_eq!(output, Key::new([1u8; KEY_LEN]));
+	// }
 
 	#[test]
 	fn xchacha20_poly1305_encrypt_tiny() {

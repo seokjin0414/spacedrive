@@ -41,7 +41,9 @@ tracing = "0.1.40"
 tracing-subscriber = "0.3.18"
 tracing-appender = "0.2.3"
 
-rspc = { git = "https://github.com/brxken128/rspc", rev = "56e57692b272e8cbfe734a81ee0c804e749ff10c" }
+rspc = { git = "https://github.com/brxken128/rspc", rev = "56e57692b272e8cbfe734a81ee0c804e749ff10c", features = [
+	"axum",
+] }
 specta = { git = "https://github.com/brxken128/specta", rev = "7c08f6e457331db3a5ab41cfb33de48058b1f296" }
 tauri-specta = { git = "https://github.com/brxken128/tauri-specta", rev = "b2c5f21d24121356f29c1bbc18541b3d1a35dad9" }
 
@@ -92,8 +94,8 @@ if-watch = { git = "https://github.com/oscartbeaumont/if-watch.git", rev = "a92c
 rspc = { git = "https://github.com/spacedriveapp/rspc.git", rev = "f3347e2e8bfe3f37bfacc437ca329fe71cdcb048" }
 
 # `cursor_position` method
-tauri = { git = "https://github.com/spacedriveapp/tauri.git", rev = "8409af71a83d631ff9d1cd876c441a57511a1cbd" }
-tao = { git = "https://github.com/spacedriveapp/tao", rev = "7880adbc090402c44fbcf006669458fa82623403" }
+# tauri = { git = "https://github.com/spacedriveapp/tauri.git", rev = "8409af71a83d631ff9d1cd876c441a57511a1cbd" }
+# tao = { git = "https://github.com/spacedriveapp/tao", rev = "7880adbc090402c44fbcf006669458fa82623403" }
 
 # Add `Control::open_stream_with_addrs`
 libp2p = { git = "https://github.com/spacedriveapp/rust-libp2p.git", rev = "a005656df7e82059a0eb2e333ebada4731d23f8c" }

@@ -43,7 +43,7 @@ directories = "5.0.1"
 
 [target.'cfg(target_os = "linux")'.dependencies]
 sd-desktop-linux = { path = "../crates/linux" }
-webkit2gtk = { version = "2.0.1", features = ["v2_38"] }
+webkit2gtk = { version = "2.0.0", features = ["v2_38"] }
 
 [target.'cfg(target_os = "macos")'.dependencies]
 sd-desktop-macos = { path = "../crates/macos" }
@@ -53,7 +53,7 @@ sd-desktop-windows = { path = "../crates/windows" }
 webview2-com = "0.20.0"
 
 [build-dependencies]
-tauri-build = "2.0.0-beta.10"
+tauri-build = "2.0.0-beta"
 
 [features]
 default = ["ai-models", "custom-protocol"]

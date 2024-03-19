@@ -41,7 +41,7 @@ tracing = "0.1.40"
 tracing-subscriber = "0.3.18"
 tracing-appender = "0.2.3"
 
-rspc = { version = "0.1.4" }
+rspc = { git = "https://github.com/brxken128/rspc", rev = "56e57692b272e8cbfe734a81ee0c804e749ff10c" }
 specta = { git = "https://github.com/brxken128/specta", rev = "7c08f6e457331db3a5ab41cfb33de48058b1f296" }
 tauri-specta = { git = "https://github.com/brxken128/tauri-specta", rev = "b2c5f21d24121356f29c1bbc18541b3d1a35dad9" }
 

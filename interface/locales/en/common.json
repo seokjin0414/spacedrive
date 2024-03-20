@@ -437,5 +437,12 @@
 	"failed_to_download_update": "Failed to download update",
 	"updated_successfully": "Updated successfully, you're on version {{version}}",
 	"view_changes": "View Changes",
-	"update": "Update"
+	"update": "Update",
+	"setup_vault": "Setup your Vault",
+	"setup_vault_description": "Setup your vault to securely store keys on this device, for this library",
+	"setting_up_vault": "Setting up your Vault...",
+	"master_password": "Master Password",
+	"master_password_placeholder": "Password",
+	"passwords_do_not_match": "Passwords don't match",
+	"secret_key": "Secret key"
 }

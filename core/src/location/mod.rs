@@ -37,7 +37,7 @@ use serde::Deserialize;
 use serde_json::json;
 use specta::Type;
 use tokio::{fs, io, time::Instant};
-use tracing::{debug, info, warn};
+use tracing::{debug, error, info, warn};
 use uuid::Uuid;
 
 mod error;
@@ -176,8 +176,10 @@ impl LocationCreateArgs {
 			})
 			.await
 			{
-				delete_location(node, library, location.data.id).await?;
-				Err(err)?;
+				// DISABLED TO FAIL SILENTLY - HOTFIX FOR LACK OF WRITE PERMISSION PREVENTING LOCATION CREATION
+				error!("Failed to write .spacedrive file: {:?}", err);
+				// delete_location(node, library, location.data.id).await?;
+				// Err(err)?;
 			}
 
 			info!("Created location: {:?}", &location.data);

@@ -1,6 +1,6 @@
 import { BottomTabScreenProps, createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { CompositeScreenProps, NavigatorScreenParams } from '@react-navigation/native';
-import { StackScreenProps } from '@react-navigation/stack';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { BlurView } from 'expo-blur';
 import { useEffect, useRef, useState } from 'react';
 import { Platform, StyleSheet, ViewStyle } from 'react-native';
@@ -100,9 +100,9 @@ export default function TabNavigator() {
 			screenOptions={{
 				tabBarStyle: {
 					position: 'absolute',
-					backgroundColor: tw.color('mobile-navtab'),
+					backgroundColor: tw.color('app-navtab/50'),
 					borderTopWidth: 1,
-					borderTopColor: tw.color('app-line/50'),
+					borderTopColor: tw.color('app-cardborder'),
 					height: Platform.OS === 'android' ? 60 : 80,
 					paddingVertical: 5
 				},
@@ -114,7 +114,7 @@ export default function TabNavigator() {
 				),
 				headerShown: false,
 				tabBarActiveTintColor: tw.color('accent'),
-				tabBarInactiveTintColor: tw.color('ink-faint')
+				tabBarInactiveTintColor: tw.color('ink/50')
 			}}
 		>
 			{TabScreens.map((screen, index) => (
@@ -198,5 +198,5 @@ export type TabParamList = {
 
 export type TabScreenProps<Screen extends keyof TabParamList> = CompositeScreenProps<
 	BottomTabScreenProps<TabParamList, Screen>,
-	StackScreenProps<RootStackParamList, 'Root'>
+	NativeStackScreenProps<RootStackParamList, 'Root'>
 >;

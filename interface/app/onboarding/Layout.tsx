@@ -1,5 +1,5 @@
 import { BloomOne } from '@sd/assets/images';
-import { introvideobg, introvideobgmp4, sdintro, sdintromp4 } from '@sd/assets/videos';
+import { SdIntro } from '@sd/assets/videos';
 import clsx from 'clsx';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useState } from 'react';
@@ -25,12 +25,6 @@ export const Component = () => {
 
 	if (ctx.libraries.isLoading) return null;
 	if (ctx.library?.uuid !== undefined) return <Navigate to={`/${ctx.library.uuid}`} replace />;
-
-	// On production builds - mp4 works with macOS - for windows and others, webm
-	const videoOS = {
-		videobg: os === 'macOS' ? introvideobgmp4 : introvideobg,
-		intro: os === 'macOS' ? sdintromp4 : sdintro
-	};
 
 	return (
 		<OnboardingContext.Provider value={ctx}>
@@ -58,30 +52,17 @@ export const Component = () => {
 								fill="none"
 								xmlns="http://www.w3.org/2000/svg"
 							>
-								<rect width="100%" height="100%" fill="#1D1D27" />
+								<rect width="100%" height="100%" fill="#13151A" />
 							</svg>
 							<video
-								style={{
-									position: 'absolute',
-									objectFit: 'cover',
-									width: '100vw',
-									height: '100vh',
-									zIndex: -1
-								}}
-								preload="auto"
-								src={videoOS.videobg}
-								muted
-								controls={false}
-							/>
-							<video
-								className="mx-auto w-[700px]"
+								className="relative z-10 mx-auto brightness-100"
 								autoPlay
 								onEnded={() => {
 									setShowIntro(false);
 								}}
 								muted
 								controls={false}
-								src={videoOS.intro}
+								src={SdIntro}
 							/>
 						</motion.div>
 					)}

@@ -63,7 +63,14 @@ prisma-client-rust = { workspace = true, features = ["rspc"] }
 regex = { workspace = true }
 reqwest = { workspace = true, features = ["json", "native-tls-vendored"] }
 rmp-serde = { workspace = true }
-rspc = { workspace = true, features = ["axum", "uuid", "chrono", "tracing"] }
+rspc = { workspace = true, features = [
+	"alpha",
+	"unstable",
+	"axum",
+	"uuid",
+	"chrono",
+	"tracing",
+] }
 serde = { workspace = true, features = ["derive"] }
 serde_json = { workspace = true }
 specta = { workspace = true }

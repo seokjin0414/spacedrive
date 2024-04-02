@@ -40,7 +40,6 @@ tauri = { version = "2.0.0-beta.13", features = [
 	"linux-ipc-protocol",  # allows us to use custom protocol stuff, requires webkit2gtk 2.40,
 ] }
 directories = "5.0.1"
-tauri-plugin-window-state = "2.0.0-beta.3"
 
 [target.'cfg(target_os = "linux")'.dependencies]
 sd-desktop-linux = { path = "../crates/linux" }

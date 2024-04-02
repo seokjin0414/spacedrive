@@ -23,11 +23,11 @@ serde = [
 	"bincode/serde",
 ]
 keyring = ["dep:linux-keyutils", "dep:security-framework"]
-secret-service = [
-	"keyring",
-	"dep:secret-service",
-	"dep:zbus",
-] # explicit enabling required as the secret service api requires `zbus` and is messy
+# secret-service = [
+# 	"keyring",
+# 	"dep:secret-service",
+# 	"dep:zbus",
+# ] # explicit enabling required as the secret service api requires `zbus` and is messy
 experimental = []
 
 [dependencies]
@@ -89,16 +89,16 @@ uuid = { version = "1.7.0", features = ["v4"] }
 # linux OS keyring
 [target.'cfg(target_os = "linux")'.dependencies]
 linux-keyutils = { version = "0.2.4", features = ["std"], optional = true }
-secret-service = { version = "3.0.1", features = [
-	"crypto-rust",
-], optional = true }
+# secret-service = { version = "3.0.1", features = [
+# 	"crypto-rust",
+# ], optional = true }
 
-# this needs to remain at versions < 4, as they made some changes and i can't get it
-# to compile for the time being
-zbus = { version = "3.15.2", default_features = false, features = [
-	"tokio",
-	"blocking",
-], optional = true }
+# # this needs to remain at versions < 4, as they made some changes and i can't get it
+# # to compile for the time being
+# zbus = { version = "3.15.2", default_features = false, features = [
+# 	"tokio",
+# 	"blocking",
+# ], optional = true }
 
 [target.'cfg(any(target_os = "macos", target_os = "ios"))'.dependencies]
 security-framework = { version = "2.9.2", optional = true }

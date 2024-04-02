@@ -9,7 +9,7 @@ repository = { workspace = true }
 edition = { workspace = true }
 
 [lib]
-name = "app_lib"
+name = "sd_desktop_lib"
 crate-type = ["staticlib", "cdylib", "rlib", "lib"]
 
 [dependencies]
@@ -25,6 +25,7 @@ prisma-client-rust = { workspace = true }
 rand = { workspace = true }
 rspc = { workspace = true, features = ["tauri", "tracing"] }
 serde = { workspace = true }
+serde_json = { workspace = true }
 specta = { workspace = true }
 tokio = { workspace = true, features = ["sync"] }
 tracing = { workspace = true }
@@ -39,6 +40,10 @@ tauri = { version = "2.0.0-beta.13", features = [
 	"tracing",
 	"linux-ipc-protocol",  # allows us to use custom protocol stuff, requires webkit2gtk 2.40,
 ] }
+
+tauri-plugin-shell = "2.0.0-beta.3"
+tauri-plugin-dialog = "2.0.0-beta.3"
+
 directories = "5.0.1"
 
 [target.'cfg(target_os = "linux")'.dependencies]

@@ -556,7 +556,8 @@ pub async fn relink_location(
 
 	metadata.relink(*id, location_path).await?;
 
-	let pub_id = metadata.location_pub_id(*id)?.as_ref().to_vec();
+	let location_uuid = metadata.location_pub_id(*id)?;
+	let pub_id: Vec<u8> = Vec::from(location_uuid);
 	let path = location_path
 		.to_str()
 		.map(str::to_string)

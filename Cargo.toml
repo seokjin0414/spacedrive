@@ -97,7 +97,7 @@ if-watch = { git = "https://github.com/oscartbeaumont/if-watch.git", rev = "a92c
 specta = { git = "https://github.com/brxken128/specta", rev = "8965d61cc75aa861fbdedf200cacc5cfec51ead5" }
 # rspc = { git = "https://github.com/brxken128/rspc", rev = "fdbc7bebdec9c4118673649e3eca232c1fd53679" }
 rspc = { git = "https://github.com/brxken128/rspc", rev = "4672b8698c6ee4fca5e236c95f70f4a49e781152" }
-tauri-specta = { git = "https://github.com/brxken128/tauri-specta", rev = "5dccd7bafd511185491dbbc62fd53622743fe2ad" }
+tauri-specta = { git = "https://github.com/brxken128/tauri-specta", rev = "e430a4263f928399a8dcfa17ec5f7b6bd113a3e1" }
 
 # `cursor_position` method
 # tauri = { git = "https://github.com/spacedriveapp/tauri.git", rev = "8409af71a83d631ff9d1cd876c441a57511a1cbd" }

@@ -10,7 +10,7 @@ edition = { workspace = true }
 
 [lib]
 name = "sd_desktop_lib"
-crate-type = ["staticlib", "cdylib", "rlib", "lib"]
+crate-type = ["staticlib", "cdylib", "rlib"]
 
 [dependencies]
 sd-core = { path = "../../../core", features = ["ffmpeg", "heif"] }
@@ -43,6 +43,7 @@ tauri = { version = "2.0.0-beta.13", features = [
 
 tauri-plugin-shell = "2.0.0-beta.3"
 tauri-plugin-dialog = "2.0.0-beta.3"
+tauri-plugin-os = "2.0.0-beta.3"
 
 directories = "5.0.1"
 

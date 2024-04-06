@@ -1,11 +1,11 @@
+import { useDrawerStatus } from '@react-navigation/drawer';
 import { useNavigation } from '@react-navigation/native';
 import { MotiView } from 'moti';
 import { CaretRight, Gear, Lock, Plus } from 'phosphor-react-native';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Alert, Pressable, Text, View } from 'react-native';
 import { useClientContext } from '@sd/client';
 import { tw, twStyle } from '~/lib/tailwind';
-import { SettingsStackScreenProps } from '~/navigation/tabs/SettingsStack';
 import { currentLibraryStore } from '~/utils/nav';
 
 import { AnimatedHeight } from '../animation/layout';
@@ -13,31 +13,33 @@ import { ModalRef } from '../layout/Modal';
 import CreateLibraryModal from '../modal/CreateLibraryModal';
 import { Divider } from '../primitive/Divider';
 
-interface Props {
-	style?: string;
-}
-
-const BrowseLibraryManager = ({ style }: Props) => {
+const DrawerLibraryManager = () => {
 	const [dropdownClosed, setDropdownClosed] = useState(true);
+
+	// Closes the dropdown when the drawer is closed
+	const isDrawerOpen = useDrawerStatus() === 'open';
+	useEffect(() => {
+		if (!isDrawerOpen) setDropdownClosed(true);
+	}, [isDrawerOpen]);
 
 	const { library: currentLibrary, libraries } = useClientContext();
 
-	const navigation = useNavigation<SettingsStackScreenProps<'Settings'>['navigation']>();
+	const navigation = useNavigation();
 
 	const modalRef = useRef<ModalRef>(null);
 
 	return (
-		<View style={twStyle(`w-full`, style)}>
+		<View>
 			<Pressable onPress={() => setDropdownClosed((v) => !v)}>
 				<View
 					style={twStyle(
-						'flex h-11 w-full flex-row items-center justify-between border bg-app-input px-3 shadow-sm',
+						'flex h-10 w-full flex-row items-center justify-between border bg-app-input px-3 shadow-sm',
 						dropdownClosed
 							? 'rounded-md border-app-inputborder'
-							: 'rounded-t-md border-app-inputborder border-b-app-inputborder'
+							: 'rounded-t-md border-b-0 border-app-inputborder'
 					)}
 				>
-					<Text style={tw`text-md font-semibold text-ink`}>
+					<Text style={tw`text-sm font-semibold text-ink`}>
 						{currentLibrary?.config.name}
 					</Text>
 					<MotiView
@@ -48,10 +50,13 @@ const BrowseLibraryManager = ({ style }: Props) => {
 					</MotiView>
 				</View>
 			</Pressable>
-			<AnimatedHeight style={tw`absolute top-10 z-10 w-full`} hide={dropdownClosed}>
-				<View style={tw`w-full rounded-b-md border border-zinc-800 bg-zinc-900 p-2`}>
+			<AnimatedHeight hide={dropdownClosed}>
+				<View
+					style={tw`w-full rounded-b-md border border-app-inputborder bg-app-input p-2`}
+				>
 					{/* Libraries */}
 					{libraries.data?.map((library) => {
+						// console.log('library', library);
 						return (
 							<Pressable
 								key={library.uuid}
@@ -80,10 +85,7 @@ const BrowseLibraryManager = ({ style }: Props) => {
 					{/* Create Library */}
 					<Pressable
 						style={tw`flex flex-row items-center px-1.5 py-[8px]`}
-						onPress={() => {
-							modalRef.current?.present();
-							setDropdownClosed(true);
-						}}
+						onPress={() => modalRef.current?.present()}
 					>
 						<Plus size={18} weight="bold" color="white" style={tw`mr-2`} />
 						<Text style={tw`text-sm font-semibold text-white`}>New Library</Text>
@@ -92,8 +94,13 @@ const BrowseLibraryManager = ({ style }: Props) => {
 					{/* Manage Library */}
 					<Pressable
 						onPress={() => {
-							navigation.navigate('LibraryGeneralSettings');
-							setDropdownClosed(true);
+							navigation.navigate('Root', {
+								screen: 'Home',
+								params: {
+									screen: 'SettingsStack',
+									params: { screen: 'LibraryGeneralSettings' }
+								}
+							});
 						}}
 					>
 						<View style={tw`flex flex-row items-center px-1.5 py-[8px]`}>
@@ -114,4 +121,4 @@ const BrowseLibraryManager = ({ style }: Props) => {
 	);
 };
 
-export default BrowseLibraryManager;
+export default DrawerLibraryManager;

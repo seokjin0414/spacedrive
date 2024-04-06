@@ -46,7 +46,7 @@ export type Procedures = {
         { key: "search.objectsCount", input: LibraryArgs<{ filters?: SearchFilterArgs[] }>, result: number } | 
         { key: "search.paths", input: LibraryArgs<FilePathSearchArgs>, result: SearchData<ExplorerItem> } | 
         { key: "search.pathsCount", input: LibraryArgs<{ filters?: SearchFilterArgs[] }>, result: number } | 
-        { key: "search.saved.get", input: LibraryArgs<number>, result: { id: number; pub_id: number[]; search: string | null; filters: string | null; name: string | null; icon: string | null; description: string | null; date_created: string | null; date_modified: string | null } | null } | 
+        { key: "search.saved.get", input: LibraryArgs<number>, result: { id: number; pub_id: number[]; target: string | null; search: string | null; filters: string | null; name: string | null; icon: string | null; description: string | null; date_created: string | null; date_modified: string | null } | null } | 
         { key: "search.saved.list", input: LibraryArgs<null>, result: SavedSearch[] } | 
         { key: "sync.enabled", input: LibraryArgs<null>, result: boolean } | 
         { key: "sync.messages", input: LibraryArgs<null>, result: CRDTOperation[] } | 
@@ -69,12 +69,14 @@ export type Procedures = {
         { key: "cloud.locations.testing", input: TestingParams, result: null } | 
         { key: "cloud.setApiOrigin", input: string, result: null } | 
         { key: "ephemeralFiles.copyFiles", input: LibraryArgs<EphemeralFileSystemOps>, result: null } | 
+        { key: "ephemeralFiles.createFile", input: LibraryArgs<CreateEphemeralFileArgs>, result: string } | 
         { key: "ephemeralFiles.createFolder", input: LibraryArgs<CreateEphemeralFolderArgs>, result: string } | 
         { key: "ephemeralFiles.cutFiles", input: LibraryArgs<EphemeralFileSystemOps>, result: null } | 
         { key: "ephemeralFiles.deleteFiles", input: LibraryArgs<string[]>, result: null } | 
         { key: "ephemeralFiles.renameFile", input: LibraryArgs<EphemeralRenameFileArgs>, result: null } | 
         { key: "files.convertImage", input: LibraryArgs<ConvertImageArgs>, result: null } | 
         { key: "files.copyFiles", input: LibraryArgs<OldFileCopierJobInit>, result: null } | 
+        { key: "files.createFile", input: LibraryArgs<CreateFileArgs>, result: string } | 
         { key: "files.createFolder", input: LibraryArgs<CreateFolderArgs>, result: string } | 
         { key: "files.cutFiles", input: LibraryArgs<OldFileCutterJobInit>, result: null } | 
         { key: "files.deleteFiles", input: LibraryArgs<OldFileDeleterJobInit>, result: null } | 
@@ -116,7 +118,7 @@ export type Procedures = {
         { key: "p2p.debugConnect", input: RemoteIdentity, result: string } | 
         { key: "p2p.spacedrop", input: SpacedropArgs, result: string } | 
         { key: "preferences.update", input: LibraryArgs<LibraryPreferences>, result: null } | 
-        { key: "search.saved.create", input: LibraryArgs<{ name: string; search?: string | null; filters?: string | null; description?: string | null; icon?: string | null }>, result: null } | 
+        { key: "search.saved.create", input: LibraryArgs<{ name: string; target?: SearchTarget; search?: string | null; filters?: string | null; description?: string | null; icon?: string | null }>, result: null } | 
         { key: "search.saved.delete", input: LibraryArgs<number>, result: null } | 
         { key: "search.saved.update", input: LibraryArgs<[number, Args]>, result: null } | 
         { key: "sync.enable", input: LibraryArgs<null>, result: null } | 
@@ -201,7 +203,11 @@ export type ConvertImageArgs = { location_id: number; file_path_id: number; dele
 
 export type ConvertibleExtension = "bmp" | "dib" | "ff" | "gif" | "ico" | "jpg" | "jpeg" | "png" | "pnm" | "qoi" | "tga" | "icb" | "vda" | "vst" | "tiff" | "tif" | "hif" | "heif" | "heifs" | "heic" | "heics" | "avif" | "avci" | "avcs" | "svg" | "svgz" | "pdf" | "webp"
 
+export type CreateEphemeralFileArgs = { path: string; context: EphemeralFileCreateContextTypes; name: string | null }
+
 export type CreateEphemeralFolderArgs = { path: string; name: string | null }
+
+export type CreateFileArgs = { location_id: number; sub_path: string | null; name: string | null; context: FileCreateContextTypes }
 
 export type CreateFolderArgs = { location_id: number; sub_path: string | null; name: string | null }
 
@@ -222,6 +228,8 @@ export type DiskType = "SSD" | "HDD" | "Removable"
 export type DoubleClickAction = "openFile" | "quickPreview"
 
 export type EditLibraryArgs = { id: string; name: LibraryName | null; description: MaybeUndefined<string> }
+
+export type EphemeralFileCreateContextTypes = "empty" | "text"
 
 export type EphemeralFileSystemOps = { sources: string[]; target_dir: string }
 
@@ -250,9 +258,11 @@ export type ExplorerItem = { type: "Path"; thumbnail: string[] | null; item: Fil
 
 export type ExplorerLayout = "grid" | "list" | "media"
 
-export type ExplorerSettings<TOrder> = { layoutMode: ExplorerLayout | null; gridItemSize: number | null; gridGap: number | null; mediaColumns: number | null; mediaAspectSquare: boolean | null; mediaViewWithDescendants: boolean | null; openOnDoubleClick: DoubleClickAction | null; showBytesInGridView: boolean | null; colVisibility: { [key in string]: boolean } | null; colSizes: { [key in string]: number } | null; order?: TOrder | null; showHiddenFiles?: boolean }
+export type ExplorerSettings<TOrder> = { layoutMode: ExplorerLayout | null; gridItemSize: number | null; gridGap: number | null; mediaColumns: number | null; mediaAspectSquare: boolean | null; mediaViewWithDescendants: boolean | null; openOnDoubleClick: DoubleClickAction | null; showBytesInGridView: boolean | null; colVisibility: { [key in string]: boolean } | null; colSizes: { [key in string]: number } | null; listViewIconSize: string | null; listViewTextSize: string | null; order?: TOrder | null; showHiddenFiles?: boolean }
 
 export type Feedback = { message: string; emoji: number }
+
+export type FileCreateContextTypes = "empty" | "text"
 
 export type FilePath = { id: number; pub_id: number[]; is_dir: boolean | null; cas_id: string | null; integrity_checksum: string | null; location_id: number | null; materialized_path: string | null; name: string | null; extension: string | null; hidden: boolean | null; size_in_bytes: string | null; size_in_bytes_bytes: number[] | null; inode: number[] | null; object_id: number | null; key_id: number | null; date_created: string | null; date_modified: string | null; date_indexed: string | null }
 
@@ -562,11 +572,13 @@ export type Response = { Start: { user_code: string; verification_url: string; v
 
 export type RuleKind = "AcceptFilesByGlob" | "RejectFilesByGlob" | "AcceptIfChildrenDirectoriesArePresent" | "RejectIfChildrenDirectoriesArePresent"
 
-export type SavedSearch = { id: number; pub_id: number[]; search: string | null; filters: string | null; name: string | null; icon: string | null; description: string | null; date_created: string | null; date_modified: string | null }
+export type SavedSearch = { id: number; pub_id: number[]; target: string | null; search: string | null; filters: string | null; name: string | null; icon: string | null; description: string | null; date_created: string | null; date_modified: string | null }
 
 export type SearchData<T> = { cursor: number[] | null; items: Reference<T>[]; nodes: CacheNode[] }
 
 export type SearchFilterArgs = { filePath: FilePathFilterArgs } | { object: ObjectFilterArgs }
+
+export type SearchTarget = "paths" | "objects"
 
 export type SetFavoriteArgs = { id: number; favorite: boolean }
 

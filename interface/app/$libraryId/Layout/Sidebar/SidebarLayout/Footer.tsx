@@ -1,22 +1,31 @@
 import { Gear } from '@phosphor-icons/react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router';
-import { JobManagerContextProvider, LibraryContextProvider, useClientContext, useDebugState, useLibrarySubscription } from '@sd/client';
+import {
+	JobManagerContextProvider,
+	LibraryContextProvider,
+	useClientContext,
+	useDebugState,
+	useLibrarySubscription
+} from '@sd/client';
 import { Button, ButtonLink, Popover, Tooltip, usePopover } from '@sd/ui';
 import { useKeysMatcher, useLocale, useShortcut } from '~/hooks';
+import { useRoutingContext } from '~/RoutingContext';
 import { usePlatform } from '~/util/Platform';
 
 import DebugPopover from '../DebugPopover';
 import { IsRunningJob, JobManager } from '../JobManager';
+import { useSidebarStore } from '../store';
 import FeedbackButton from './FeedbackButton';
-import { useState } from 'react';
 
 export default () => {
 	const { library } = useClientContext();
+	const { visible } = useRoutingContext();
+	const { t } = useLocale();
 	const debugState = useDebugState();
 	const navigate = useNavigate();
 	const symbols = useKeysMatcher(['Meta', 'Shift']);
-
-	const { t } = useLocale();
+	const store = useSidebarStore();
 
 	useShortcut('navToSettings', (e) => {
 		e.stopPropagation();
@@ -45,7 +54,11 @@ export default () => {
 					)}
 				</>
 			)}
-			{library && <LibraryContextProvider library={library}><SyncStatusIndicator/></LibraryContextProvider>}
+			{library && (
+				<LibraryContextProvider library={library}>
+					<SyncStatusIndicator />
+				</LibraryContextProvider>
+			)}
 			<div className="flex w-full items-center justify-between">
 				<div className="flex">
 					<ButtonLink
@@ -64,7 +77,10 @@ export default () => {
 					</ButtonLink>
 					<JobManagerContextProvider>
 						<Popover
-							popover={jobManagerPopover}
+							popover={{
+								...jobManagerPopover,
+								open: jobManagerPopover.open || (store.pinJobManager && visible)
+							}}
 							trigger={
 								<Button
 									id="job-manager-button"
@@ -101,9 +117,9 @@ export default () => {
 function SyncStatusIndicator() {
 	const [syncing, setSyncing] = useState(false);
 
-	useLibrarySubscription(["sync.active"], {
+	useLibrarySubscription(['sync.active'], {
 		onData: setSyncing
-	})
+	});
 
-	return null
+	return null;
 }

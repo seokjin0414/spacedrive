@@ -30,8 +30,8 @@ use serde::{Deserialize, Serialize};
 use specta::Type;
 use tracing::{error, info, warn};
 
+pub mod exif_data;
 pub mod file_path;
-pub mod media_data;
 pub mod object;
 pub mod saved;
 mod utils;

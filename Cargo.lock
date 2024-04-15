@@ -8690,6 +8690,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "sd-stream-loop"
+version = "0.0.0"
+dependencies = [
+ "blake3",
+ "thiserror",
+ "tokio",
+]
+
+[[package]]
 name = "sd-sync"
 version = "0.1.0"
 dependencies = [

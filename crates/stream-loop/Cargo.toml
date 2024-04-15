@@ -1,0 +1,19 @@
+[package]
+name = "sd-stream-loop"
+version = "0.0.0"
+rust-version = "1.66.0"
+authors = ["Jake Robinson <jake@spacedrive.com>"]
+description = """
+A library that handles moving and copying files while
+reporting the progress as a percentage.
+"""
+# readme = "README.md"
+# keywords = ["stream"]
+edition = { workspace = true }
+license = { workspace = true }
+repository = { workspace = true }
+
+[dependencies]
+tokio = { workspace = true, features = ["full"] } # full being temporary
+thiserror = { workspace = true }
+blake3 = { workspace = true }

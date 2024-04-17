@@ -36,7 +36,7 @@ pub mod object;
 pub mod saved;
 mod utils;
 
-pub use self::{file_path::*, object::*, utils::*};
+pub use self::{file_path::*, object::*};
 
 use super::{Ctx, R};
 
@@ -160,12 +160,9 @@ pub fn mount() -> AlphaRouter<Ctx> {
 									}).collect::<Vec<_>>()
 								)])
 								.exec()
-								.await
-								.and_then(|l| {
-									Ok(l.into_iter()
+								.await.map(|l| l.into_iter()
 										.filter_map(|item| item.path.clone().map(|l| (l, item)))
 										.collect::<HashMap<_, _>>())
-								})
 								.map_err(|err| error!("Looking up locations failed: {err:?}"))
 								.unwrap_or_default();
 
@@ -245,7 +242,7 @@ pub fn mount() -> AlphaRouter<Ctx> {
 							};
 						}
 
-						if to_generate.len() > 0 {
+						if !to_generate.is_empty() {
 							node.thumbnailer
 								.new_ephemeral_thumbnails_batch(BatchToProcess::new(
 									to_generate,

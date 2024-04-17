@@ -25,7 +25,7 @@ impl CompressedCRDTOperations {
 		let mut instance_id = first.instance;
 		let mut instance = vec![];
 
-		let mut model_str = first.model.clone();
+		let mut model_str = first.model;
 		let mut model = vec![];
 
 		let mut record_id = first.record_id.clone();
@@ -38,7 +38,7 @@ impl CompressedCRDTOperations {
 					std::mem::take(&mut record),
 				));
 				instance.push((
-					std::mem::replace(&mut model_str, op.model.clone()),
+					std::mem::replace(&mut model_str, op.model),
 					std::mem::take(&mut model),
 				));
 				compressed.push((
@@ -51,7 +51,7 @@ impl CompressedCRDTOperations {
 					std::mem::take(&mut record),
 				));
 				instance.push((
-					std::mem::replace(&mut model_str, op.model.clone()),
+					std::mem::replace(&mut model_str, op.model),
 					std::mem::take(&mut model),
 				));
 			} else if record_id != op.record_id {
@@ -80,7 +80,7 @@ impl CompressedCRDTOperations {
 					for op in record {
 						ops.push(CRDTOperation {
 							instance: instance_id,
-							model: model_str.clone(),
+							model: model_str,
 							record_id: record_id.clone(),
 							timestamp: op.timestamp,
 							data: op.data,

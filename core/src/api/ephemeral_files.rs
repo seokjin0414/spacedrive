@@ -27,6 +27,8 @@ use specta::Type;
 use tokio::{fs, io};
 use tokio_stream::{wrappers::ReadDirStream, StreamExt};
 use tracing::{error, warn};
+#[cfg(not(any(target_os = "ios", target_os = "android")))]
+use trash;
 
 use super::{
 	files::{create_directory, FromPattern},
@@ -130,6 +132,43 @@ pub(crate) fn mount() -> AlphaRouter<Ctx> {
 									fs::remove_file(&path).await
 								}
 								.map_err(|e| FileIOError::from((path, e, "Failed to delete file"))),
+								Err(e) if e.kind() == io::ErrorKind::NotFound => Ok(()),
+								Err(e) => Err(FileIOError::from((
+									path,
+									e,
+									"Failed to get file metadata for deletion",
+								))),
+							}
+						})
+						.collect::<Vec<_>>()
+						.try_join()
+						.await?;
+
+					invalidate_query!(library, "search.ephemeralPaths");
+
+					Ok(())
+				})
+		})
+		.procedure("moveToTrash", {
+			R.with2(library())
+				.mutation(|(_, library), paths: Vec<PathBuf>| async move {
+					if cfg!(target_os = "ios") || cfg!(target_os = "android") {
+						return Err(rspc::Error::new(
+							ErrorCode::MethodNotSupported,
+							"Moving to trash is not supported on this platform".to_string(),
+						));
+					}
+
+					paths
+						.into_iter()
+						.map(|path| async move {
+							match fs::metadata(&path).await {
+								Ok(_) => {
+									#[cfg(not(any(target_os = "ios", target_os = "android")))]
+									trash::delete(&path).unwrap();
+
+									Ok(())
+								}
 								Err(e) if e.kind() == io::ErrorKind::NotFound => Ok(()),
 								Err(e) => Err(FileIOError::from((
 									path,

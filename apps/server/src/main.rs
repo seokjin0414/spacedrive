@@ -9,6 +9,10 @@ use axum::{
 	routing::get,
 	TypedHeader,
 };
+
+#[cfg(not(feature = "assets"))]
+use axum::middleware;
+
 use sd_core::{custom_uri, Node};
 use secstr::SecStr;
 use tracing::{info, warn};
@@ -143,7 +147,8 @@ async fn main() {
 		}
 	}
 
-	let _state = AppState { auth };
+	#[cfg(not(feature = "assets"))]
+	let state = AppState { auth };
 
 	let (node, router) = match Node::new(
 		data_dir,

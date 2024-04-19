@@ -69,10 +69,11 @@ impl SearchFilterArgs {
 		file_path: &mut Vec<prisma::file_path::WhereParam>,
 		object: &mut Vec<prisma::object::WhereParam>,
 	) -> Result<(), rspc::Error> {
-		Ok(match self {
+		match self {
 			Self::FilePath(v) => file_path.extend(v.into_params(db).await?),
 			Self::Object(v) => object.extend(v.into_params()),
-		})
+		};
+		Ok(())
 	}
 }
 
